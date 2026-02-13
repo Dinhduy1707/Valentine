@@ -1,1067 +1,985 @@
-﻿<!doctype html>
+﻿<!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Valentine Cinematic Reveal</title>
-    <style>
-      /* ===============================
-       Theme + Base
-    =============================== */
-      :root {
-        --bg-1: #060205;
-        --bg-2: #1a0008;
-        --bg-3: #320012;
-        --pink: #ff4f87;
-        --pink-soft: #ff9abb;
-        --gold: #ffd4b8;
-        --ink: #7f2146;
-        --letter: #fff9fc;
-        --env-1: #ffe8f1;
-        --env-2: #f7c4d7;
-        --glow:
-          0 0 14px rgba(255, 78, 133, 0.85), 0 0 30px rgba(255, 78, 133, 0.5);
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valentine 3D Deargift Style</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Great+Vibes&family=Quicksand:wght@400;600;700&display=swap");
 
-      * {
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
-      }
+    :root {
+      --bg-1: #050204;
+      --bg-2: #170008;
+      --bg-3: #390013;
+      --pink: #ff4d86;
+      --pink-soft: #ffb7d0;
+      --letter-bg: #fff8fc;
+      --letter-ink: #7d1e46;
+      --envelope-a: #ffe5ef;
+      --envelope-b: #f6bdd0;
+    }
 
-      html,
-      body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        overflow: hidden;
-        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-        background:
-          radial-gradient(
-            circle at 16% 18%,
-            rgba(129, 0, 39, 0.38),
-            transparent 44%
-          ),
-          radial-gradient(
-            circle at 82% 72%,
-            rgba(144, 0, 53, 0.28),
-            transparent 48%
-          ),
-          linear-gradient(140deg, var(--bg-2) 0%, var(--bg-1) 52%, #000 100%);
-        color: #fff7fb;
-        perspective: 1200px;
-      }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-      .scene {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        isolation: isolate;
-        transform-origin: center;
-        will-change: transform;
-      }
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      font-family: "Quicksand", sans-serif;
+      color: #fff6fb;
+      background:
+        radial-gradient(circle at 18% 22%, rgba(142, 0, 43, 0.42), transparent 42%),
+        radial-gradient(circle at 82% 70%, rgba(120, 0, 49, 0.3), transparent 45%),
+        linear-gradient(145deg, var(--bg-2) 0%, var(--bg-1) 56%, #000 100%);
+    }
 
-      .grain,
-      .vignette,
-      .flash {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-      }
+    #app {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+    }
 
-      .grain {
-        z-index: 2;
-        opacity: 0.08;
-        background-image:
-          radial-gradient(
-            circle at 20% 30%,
-            rgba(255, 255, 255, 0.8) 0.8px,
-            transparent 1px
-          ),
-          radial-gradient(
-            circle at 70% 60%,
-            rgba(255, 255, 255, 0.8) 0.8px,
-            transparent 1px
-          );
-        background-size:
-          5px 5px,
-          6px 6px;
-        mix-blend-mode: soft-light;
-        animation: grainShift 3.8s steps(7) infinite;
-      }
+    .cinematic-glow,
+    .vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
 
-      .vignette {
-        z-index: 10;
-        background: radial-gradient(
-          circle at center,
-          transparent 50%,
-          rgba(0, 0, 0, 0.68) 100%
-        );
-      }
+    .cinematic-glow {
+      z-index: 3;
+      background:
+        radial-gradient(circle at 50% 62%, rgba(255, 73, 133, 0.18), transparent 55%),
+        radial-gradient(circle at 50% 40%, rgba(255, 187, 216, 0.1), transparent 62%);
+      mix-blend-mode: screen;
+    }
 
-      .flash {
-        z-index: 13;
+    .vignette {
+      z-index: 4;
+      background: radial-gradient(circle at center, transparent 54%, rgba(0, 0, 0, 0.68) 100%);
+    }
+
+    .hud {
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .hint-top {
+      margin: 0;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(22, 0, 10, 0.52);
+      border: 1px solid rgba(255, 180, 209, 0.34);
+      font-size: 0.78rem;
+      letter-spacing: 0.2px;
+      text-shadow: 0 0 8px rgba(255, 105, 156, 0.72);
+      backdrop-filter: blur(8px);
+      pointer-events: auto;
+      transition: opacity 420ms ease;
+    }
+
+    .hint-top.hide {
+      opacity: 0;
+    }
+
+    .music-btn {
+      border: 1px solid rgba(255, 193, 217, 0.42);
+      background: linear-gradient(160deg, rgba(255, 83, 142, 0.36), rgba(76, 0, 26, 0.44));
+      color: #fff5f9;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.76rem;
+      cursor: pointer;
+      box-shadow: 0 0 16px rgba(255, 92, 151, 0.24);
+      backdrop-filter: blur(8px);
+      pointer-events: auto;
+    }
+
+    .music-btn:hover {
+      box-shadow: 0 0 18px rgba(255, 92, 151, 0.45);
+    }
+
+    .envelope-stage {
+      position: fixed;
+      inset: 0;
+      z-index: 11;
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 560ms ease, transform 760ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      pointer-events: none;
+    }
+
+    .envelope-stage.visible {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+
+    .envelope-shell {
+      position: relative;
+      width: min(90vw, 450px);
+      perspective: 1300px;
+      filter: drop-shadow(0 20px 34px rgba(0, 0, 0, 0.52));
+    }
+
+    .burst-light {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 62%;
+      aspect-ratio: 1;
+      transform: translate(-50%, -50%) scale(0.35);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 210, 227, 0.95) 0%, rgba(255, 210, 227, 0) 68%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 620ms ease, opacity 460ms ease;
+    }
+
+    .burst-light.active {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.2);
+    }
+
+    .envelope-3d {
+      position: relative;
+      width: 100%;
+      height: clamp(230px, 36vw, 292px);
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    .env-back,
+    .env-front,
+    .env-flap {
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.38);
+    }
+
+    .env-back {
+      background: linear-gradient(150deg, #ffeef5, #f7c6d8 72%);
+      transform: translateZ(-2px);
+    }
+
+    .env-front {
+      background: linear-gradient(160deg, var(--envelope-a), var(--envelope-b));
+      clip-path: polygon(0 0, 50% 52%, 100% 0, 100% 100%, 0 100%);
+      z-index: 4;
+    }
+
+    .env-flap {
+      height: 60%;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      border-bottom: none;
+      transform-origin: top;
+      background: linear-gradient(170deg, #fff5f9, #f6bfd3);
+      box-shadow: inset 0 -7px 16px rgba(167, 50, 93, 0.24);
+      transition: transform 1050ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      z-index: 7;
+    }
+
+    .seal {
+      position: absolute;
+      left: 50%;
+      top: 53%;
+      width: 54px;
+      height: 54px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 20px;
+      background: radial-gradient(circle at 30% 22%, #ff7ba3, #cb1e58 65%, #8f0032 100%);
+      box-shadow: 0 0 16px rgba(255, 80, 136, 0.52), inset 0 -4px 9px rgba(89, 0, 30, 0.54);
+      z-index: 8;
+      transition: opacity 340ms ease;
+    }
+
+    .letter {
+      position: absolute;
+      left: 50%;
+      bottom: 18px;
+      width: 90%;
+      min-height: 72%;
+      transform: translateX(-50%) translateY(82%) scale(0.92);
+      border-radius: 14px;
+      background: linear-gradient(175deg, var(--letter-bg), #ffeef5 82%);
+      box-shadow: 0 12px 28px rgba(130, 12, 52, 0.22);
+      z-index: 5;
+      overflow: hidden;
+      transition: transform 1200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      padding: clamp(16px, 3.8vw, 24px);
+    }
+
+    .letter::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        180deg,
+        rgba(255, 203, 224, 0.12) 0,
+        rgba(255, 203, 224, 0.12) 2px,
+        transparent 2px,
+        transparent 30px
+      );
+    }
+
+    .letter-content {
+      position: relative;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 820ms ease 260ms, transform 860ms ease 260ms;
+    }
+
+    .letter-content h1 {
+      margin: 0 0 10px;
+      color: #d91e5a;
+      font-family: "Great Vibes", cursive;
+      font-size: clamp(2rem, 7vw, 2.9rem);
+      font-weight: 400;
+      letter-spacing: 0.2px;
+      text-shadow: 0 0 14px rgba(255, 74, 132, 0.58);
+    }
+
+    .letter-content p {
+      margin: 0;
+      color: var(--letter-ink);
+      white-space: pre-line;
+      line-height: 1.56;
+      font-family: "Caveat", cursive;
+      font-size: clamp(1.34rem, 4.8vw, 1.95rem);
+      text-shadow: 0 0 10px rgba(255, 182, 207, 0.44);
+    }
+
+    .envelope-3d.open .env-flap {
+      transform: rotateX(-172deg);
+    }
+
+    .envelope-3d.open .seal {
+      opacity: 0;
+    }
+
+    .envelope-3d.open .letter {
+      transform: translateX(-50%) translateY(-26%) scale(1);
+    }
+
+    .envelope-3d.open .letter-content {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .envelope-hint {
+      margin: 14px 0 0;
+      text-align: center;
+      font-size: 0.84rem;
+      letter-spacing: 0.3px;
+      color: #ffd6e6;
+      text-shadow: 0 0 8px rgba(255, 96, 148, 0.44);
+    }
+
+    .mini-heart {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      transform: rotate(45deg);
+      background: #ff5f94;
+      box-shadow: 0 0 12px rgba(255, 105, 160, 0.92);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 13;
+      animation: mini-heart-fly 1900ms ease-out forwards;
+    }
+
+    .mini-heart::before,
+    .mini-heart::after {
+      content: "";
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: inherit;
+    }
+
+    .mini-heart::before {
+      left: 0;
+      top: -6px;
+    }
+
+    .mini-heart::after {
+      left: -6px;
+      top: 0;
+    }
+
+    @keyframes mini-heart-fly {
+      0% {
         opacity: 0;
-        background: radial-gradient(
-          circle at center,
-          rgba(255, 135, 178, 0.9) 0%,
-          rgba(255, 135, 178, 0) 58%
-        );
-        transition: opacity 420ms ease;
+        transform: translate3d(0, 0, 0) rotate(45deg) scale(0.25);
       }
-
-      .flash.active {
+      14% {
         opacity: 1;
       }
+      100% {
+        opacity: 0;
+        transform: translate3d(var(--tx), var(--ty), 0) rotate(45deg) scale(1.16);
+      }
+    }
 
-      /* ===============================
-       HUD + Hint
-    =============================== */
+    @media (max-width: 768px) {
       .hud {
-        position: absolute;
-        left: 14px;
-        top: 14px;
-        z-index: 20;
-        display: flex;
-        gap: 8px;
+        top: 10px;
+        left: 10px;
+        right: 10px;
       }
 
-      .control-btn {
-        border: 1px solid rgba(255, 202, 220, 0.4);
-        background: linear-gradient(
-          165deg,
-          rgba(255, 78, 134, 0.35),
-          rgba(84, 0, 26, 0.45)
-        );
-        color: #fff4f8;
-        font-size: 0.75rem;
-        letter-spacing: 0.3px;
-        padding: 8px 11px;
-        border-radius: 999px;
-        cursor: pointer;
-        backdrop-filter: blur(6px);
-        box-shadow: 0 0 16px rgba(255, 94, 150, 0.25);
+      .hint-top {
+        font-size: 0.72rem;
+        padding: 6px 10px;
       }
 
-      .intro {
-        position: absolute;
-        left: 50%;
-        top: 18%;
-        transform: translateX(-50%);
-        z-index: 14;
-        text-align: center;
-        opacity: 1;
-        transition: opacity 500ms ease;
-        pointer-events: none;
+      .music-btn {
+        font-size: 0.72rem;
+        padding: 7px 10px;
       }
 
-      .intro.hide {
-        opacity: 0;
+      .envelope-shell {
+        width: 92vw;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .envelope-3d {
+        height: 248px;
       }
 
-      .intro h1 {
-        margin: 0;
-        font-size: clamp(1.2rem, 4vw, 1.9rem);
-        letter-spacing: 0.6px;
-        color: #ffdce8;
-        text-shadow: var(--glow);
+      .seal {
+        width: 46px;
+        height: 46px;
+        font-size: 16px;
       }
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <div class="cinematic-glow" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
 
-      .intro p {
-        margin: 8px 0 0;
-        font-size: clamp(0.8rem, 2.8vw, 1rem);
-        color: #ffbfd6;
-        opacity: 0.9;
-      }
+  <header class="hud">
+    <p class="hint-top" id="sceneHint">Chạm vào một trái tim để mở điều bất ngờ</p>
+    <button class="music-btn" id="musicBtn" type="button" aria-pressed="false">♪ Bật nhạc</button>
+  </header>
 
-      /* ===============================
-       Canvas FX
-    =============================== */
-      #fxCanvas {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-        pointer-events: none;
-      }
+  <section class="envelope-stage" id="envelopeStage" aria-live="polite">
+    <div class="envelope-shell">
+      <div class="burst-light" id="burstLight"></div>
+      <div class="envelope-3d" id="envelope3d" role="button" tabindex="0" aria-label="Mở phong bì tình yêu">
+        <div class="env-back"></div>
+        <div class="env-front"></div>
+        <div class="env-flap"></div>
+        <div class="seal">❤</div>
 
-      /* ===============================
-       Floating Hearts
-    =============================== */
-      .heart-field {
-        position: absolute;
-        inset: 0;
-        z-index: 5;
-        transform-style: preserve-3d;
-        transition:
-          filter 700ms ease,
-          opacity 700ms ease;
-      }
-
-      .heart-field.dimmed {
-        filter: blur(2px) brightness(0.54);
-        opacity: 0.45;
-      }
-
-      .heart-3d {
-        position: absolute;
-        border: none;
-        background: transparent;
-        padding: 0;
-        width: var(--size);
-        height: var(--size);
-        transform-style: preserve-3d;
-        transform: translate3d(0, 0, 0);
-        cursor: pointer;
-        will-change: transform;
-        filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.4));
-      }
-
-      .heart-3d .shape {
-        position: absolute;
-        inset: 0;
-        transform: rotate(45deg);
-        border-radius: 18% 0 12% 14%;
-        background: linear-gradient(
-          150deg,
-          var(--c1),
-          var(--c2) 46%,
-          var(--c3)
-        );
-        box-shadow:
-          inset -10px -10px 14px rgba(94, 0, 28, 0.44),
-          inset 9px 12px 15px rgba(255, 212, 227, 0.54),
-          0 0 22px color-mix(in srgb, var(--c2) 76%, transparent);
-      }
-
-      .heart-3d .shape::before,
-      .heart-3d .shape::after,
-      .heart-3d .depth::before,
-      .heart-3d .depth::after {
-        content: "";
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        background: inherit;
-      }
-
-      .heart-3d .shape::before,
-      .heart-3d .depth::before {
-        top: -52%;
-        left: 0;
-      }
-
-      .heart-3d .shape::after,
-      .heart-3d .depth::after {
-        top: 0;
-        left: -52%;
-      }
-
-      .heart-3d .depth {
-        position: absolute;
-        inset: 0;
-        transform: rotate(45deg) translateZ(-8px);
-        border-radius: 18% 0 12% 14%;
-        background: linear-gradient(
-          145deg,
-          color-mix(in srgb, var(--c3) 75%, #32000f),
-          #32000f
-        );
-        opacity: 0.82;
-        filter: blur(1px);
-      }
-
-      .heart-3d .shine {
-        position: absolute;
-        width: 35%;
-        height: 35%;
-        top: 12%;
-        left: 58%;
-        transform: translateX(-50%) rotate(20deg);
-        border-radius: 999px;
-        background: radial-gradient(
-          circle at 30% 30%,
-          rgba(255, 255, 255, 0.96),
-          rgba(255, 255, 255, 0)
-        );
-        filter: blur(0.8px);
-      }
-
-      .heart-3d::after {
-        content: "";
-        position: absolute;
-        inset: -24%;
-        border-radius: 50%;
-        background: radial-gradient(
-          circle,
-          color-mix(in srgb, var(--c2) 70%, white 8%),
-          rgba(255, 91, 144, 0) 72%
-        );
-        filter: blur(6px);
-        z-index: -1;
-        animation: pulse 2.6s ease-in-out infinite;
-      }
-
-      .heart-3d.outline .depth,
-      .heart-3d.outline .shine {
-        display: none;
-      }
-
-      .heart-3d.outline .shape,
-      .heart-3d.outline .shape::before,
-      .heart-3d.outline .shape::after {
-        background: transparent;
-        border: 2.5px solid var(--outline);
-        box-shadow:
-          inset 0 0 9px color-mix(in srgb, var(--outline) 58%, white),
-          0 0 14px color-mix(in srgb, var(--outline) 76%, transparent);
-      }
-
-      .heart-3d.outline::after {
-        background: radial-gradient(
-          circle,
-          color-mix(in srgb, var(--outline) 50%, white),
-          rgba(255, 149, 193, 0) 72%
-        );
-      }
-
-      .heart-3d.selected {
-        z-index: 50;
-        transition:
-          transform 900ms cubic-bezier(0.2, 0.8, 0.2, 1),
-          filter 700ms ease;
-        transform: translate3d(calc(50vw - 50%), calc(38vh - 50%), 170px)
-          scale(2.6) rotateX(-14deg) rotateY(12deg);
-        filter: drop-shadow(0 0 28px rgba(255, 94, 151, 0.95));
-      }
-
-      /* ===============================
-       Envelope + Letter
-    =============================== */
-      .letter-stage {
-        position: absolute;
-        left: 50%;
-        top: 72%;
-        width: min(90vw, 460px);
-        transform: translate(-50%, -50%) scale(0.8);
-        transform-origin: center;
-        opacity: 0;
-        z-index: 15;
-        pointer-events: none;
-        transition:
-          opacity 520ms ease,
-          transform 900ms cubic-bezier(0.2, 0.8, 0.2, 1);
-      }
-
-      .letter-stage.visible {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-        pointer-events: auto;
-        animation: stagePop 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-      }
-
-      .envelope-wrap {
-        position: relative;
-        width: 100%;
-        height: clamp(220px, 35vw, 292px);
-        perspective: 1100px;
-        filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.48));
-      }
-
-      .envelope {
-        position: absolute;
-        inset: 0;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.4);
-        overflow: hidden;
-        cursor: pointer;
-        transform-style: preserve-3d;
-        background: linear-gradient(145deg, var(--env-1), var(--env-2));
-      }
-
-      .envelope-flap {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 60%;
-        clip-path: polygon(0 0, 100% 0, 50% 100%);
-        transform-origin: top;
-        background: linear-gradient(170deg, #fff1f6, #f6b8ce);
-        box-shadow: inset 0 -8px 20px rgba(174, 58, 99, 0.25);
-        z-index: 5;
-        transition: transform 1100ms cubic-bezier(0.2, 0.8, 0.2, 1);
-      }
-
-      .envelope-base {
-        position: absolute;
-        inset: 0;
-        clip-path: polygon(0 0, 50% 52%, 100% 0, 100% 100%, 0 100%);
-        background: linear-gradient(160deg, #ffdce8, #f4b8cb);
-        z-index: 2;
-      }
-
-      .wax {
-        position: absolute;
-        left: 50%;
-        top: 52%;
-        width: 52px;
-        height: 52px;
-        transform: translate(-50%, -50%);
-        border-radius: 50%;
-        display: grid;
-        place-items: center;
-        background: radial-gradient(
-          circle at 30% 25%,
-          #ff6c99,
-          #cc1c56 65%,
-          #940036
-        );
-        box-shadow:
-          0 0 18px rgba(255, 74, 122, 0.5),
-          inset 0 -4px 8px rgba(75, 0, 23, 0.5);
-        color: #fff;
-        font-size: 19px;
-        text-shadow: var(--glow);
-        z-index: 7;
-        transition: opacity 360ms ease;
-      }
-
-      .letter-paper {
-        position: absolute;
-        left: 50%;
-        bottom: 22px;
-        width: 90%;
-        min-height: 72%;
-        transform: translateX(-50%) translateY(78%) scale(0.9);
-        border-radius: 12px;
-        padding: clamp(16px, 3.8vw, 24px);
-        background: linear-gradient(175deg, var(--letter), #ffeef6 86%);
-        color: var(--ink);
-        box-shadow: 0 10px 25px rgba(136, 12, 54, 0.22);
-        z-index: 4;
-        overflow: hidden;
-        transition: transform 1200ms cubic-bezier(0.2, 0.8, 0.2, 1);
-      }
-
-      .letter-paper::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background: repeating-linear-gradient(
-          180deg,
-          rgba(255, 204, 226, 0.12) 0,
-          rgba(255, 204, 226, 0.12) 2px,
-          transparent 2px,
-          transparent 30px
-        );
-      }
-
-      .letter-content {
-        position: relative;
-        text-align: center;
-        opacity: 0;
-        transform: translateY(14px);
-        transition:
-          opacity 800ms ease 320ms,
-          transform 900ms ease 320ms;
-      }
-
-      .letter-title {
-        margin: 0 0 10px;
-        font-size: clamp(1.2rem, 4vw, 1.9rem);
-        color: #d91f5b;
-        text-shadow: 0 0 12px rgba(255, 80, 131, 0.65);
-      }
-
-      .letter-text {
-        margin: 0;
-        white-space: pre-line;
-        line-height: 1.75;
-        color: #7f2146;
-        font-size: clamp(0.95rem, 3.2vw, 1.1rem);
-        text-shadow: 0 0 10px rgba(255, 167, 194, 0.45);
-      }
-
-      .hint {
-        position: absolute;
-        left: 50%;
-        bottom: -33px;
-        transform: translateX(-50%);
-        margin: 0;
-        font-size: 0.82rem;
-        color: #ffd8e7;
-        text-shadow: 0 0 8px rgba(255, 92, 139, 0.52);
-        opacity: 0.82;
-        pointer-events: none;
-      }
-
-      .envelope.open .envelope-flap {
-        transform: rotateX(-170deg) translateY(-2px);
-      }
-
-      .envelope.open .wax {
-        opacity: 0;
-      }
-
-      .envelope.open .letter-paper {
-        transform: translateX(-50%) translateY(-30%) scale(1);
-      }
-
-      .envelope.open .letter-content {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      /* floating mini hearts when letter opens */
-      .mini-heart {
-        position: absolute;
-        width: 12px;
-        height: 12px;
-        transform: rotate(45deg);
-        border-radius: 2px;
-        background: #ff5f93;
-        box-shadow: 0 0 12px rgba(255, 96, 148, 0.92);
-        pointer-events: none;
-        opacity: 0;
-        z-index: 18;
-        animation: miniBurst 1900ms ease-out forwards;
-      }
-
-      .mini-heart::before,
-      .mini-heart::after {
-        content: "";
-        position: absolute;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: inherit;
-      }
-
-      .mini-heart::before {
-        top: -6px;
-        left: 0;
-      }
-
-      .mini-heart::after {
-        top: 0;
-        left: -6px;
-      }
-
-      /* ===============================
-       Keyframes
-    =============================== */
-      @keyframes pulse {
-        0%,
-        100% {
-          opacity: 0.45;
-        }
-        50% {
-          opacity: 0.94;
-        }
-      }
-
-      @keyframes stagePop {
-        0% {
-          transform: translate(-50%, -50%) scale(0.78);
-        }
-        60% {
-          transform: translate(-50%, -50%) scale(1.03);
-        }
-        100% {
-          transform: translate(-50%, -50%) scale(1);
-        }
-      }
-
-      @keyframes miniBurst {
-        0% {
-          opacity: 0;
-          transform: translate3d(0, 0, 0) scale(0.2) rotate(45deg);
-        }
-        16% {
-          opacity: 1;
-        }
-        100% {
-          opacity: 0;
-          transform: translate3d(var(--tx), var(--ty), 0) scale(1.2)
-            rotate(45deg);
-        }
-      }
-
-      @keyframes grainShift {
-        0% {
-          transform: translate(0, 0);
-        }
-        20% {
-          transform: translate(-1%, 1%);
-        }
-        40% {
-          transform: translate(1%, -1%);
-        }
-        60% {
-          transform: translate(-1%, -1%);
-        }
-        80% {
-          transform: translate(1%, 1%);
-        }
-        100% {
-          transform: translate(0, 0);
-        }
-      }
-
-      /* ===============================
-       Responsive
-    =============================== */
-      @media (max-width: 768px) {
-        .heart-3d.selected {
-          transform: translate3d(calc(50vw - 50%), calc(34vh - 50%), 110px)
-            scale(2.2) rotateX(-10deg) rotateY(8deg);
-        }
-
-        .letter-stage {
-          top: 74%;
-        }
-      }
-
-      @media (max-width: 420px) {
-        .letter-stage {
-          width: 92vw;
-        }
-
-        .envelope-wrap {
-          height: 244px;
-        }
-
-        .wax {
-          width: 46px;
-          height: 46px;
-          font-size: 16px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <main class="scene" id="scene">
-      <canvas id="fxCanvas" aria-hidden="true"></canvas>
-
-      <div class="grain"></div>
-
-      <div class="hud">
-        <button
-          class="control-btn"
-          id="musicToggle"
-          type="button"
-          aria-pressed="false"
-        >
-          ♪ Bật nhạc
-        </button>
+        <article class="letter">
+          <div class="letter-content">
+            <h1>Happy Valentine's Day ❤️</h1>
+            <p>Chúc mừng em Valentine thật xinh đẹp,
+Luôn rạng rỡ như những đóa hoa mùa xuân,
+Anh luôn ở đây vì em ❤️</p>
+          </div>
+        </article>
       </div>
+      <p class="envelope-hint" id="envelopeHint">Chạm vào phong bì để mở thư</p>
+    </div>
+  </section>
 
-      <div class="intro" id="intro">
-        <h1>Valentine Cinematic</h1>
-        <p>Chạm vào một trái tim để mở quà</p>
-      </div>
+  <audio id="bgm" loop preload="auto">
+    <source src="music.mp3" type="audio/mpeg" />
+  </audio>
 
-      <section
-        class="heart-field"
-        id="heartField"
-        aria-label="Floating hearts"
-      ></section>
+  <script type="module">
+    import * as THREE from "https://unpkg.com/three@0.161.0/build/three.module.js";
+    import { EffectComposer } from "https://unpkg.com/three@0.161.0/examples/jsm/postprocessing/EffectComposer.js";
+    import { RenderPass } from "https://unpkg.com/three@0.161.0/examples/jsm/postprocessing/RenderPass.js";
+    import { UnrealBloomPass } from "https://unpkg.com/three@0.161.0/examples/jsm/postprocessing/UnrealBloomPass.js";
+    import { BokehPass } from "https://unpkg.com/three@0.161.0/examples/jsm/postprocessing/BokehPass.js";
 
-      <section class="letter-stage" id="letterStage" aria-live="polite">
-        <div class="envelope-wrap">
-          <article
-            class="envelope"
-            id="envelope"
-            role="button"
-            tabindex="0"
-            aria-label="Open envelope"
-          >
-            <div class="envelope-flap"></div>
-            <div class="envelope-base"></div>
-            <div class="wax">❤</div>
-            <div class="letter-paper">
-              <div class="letter-content">
-                <h1 class="letter-title">Happy Valentine's Day ❤️</h1>
-                <p class="letter-text">
-                  Chúc mừng em Valentine thật xinh đẹp, Luôn rạng rỡ như những
-                  đóa hoa mùa xuân,❤️
-                </p>
-              </div>
-            </div>
-          </article>
-          <p class="hint" id="hintText">Chạm vào phong bì để mở thư</p>
-        </div>
-      </section>
+    // ==============================
+    // DOM
+    // ==============================
+    const app = document.getElementById("app");
+    const sceneHint = document.getElementById("sceneHint");
+    const musicBtn = document.getElementById("musicBtn");
+    const envelopeStage = document.getElementById("envelopeStage");
+    const envelope3d = document.getElementById("envelope3d");
+    const burstLight = document.getElementById("burstLight");
+    const envelopeHint = document.getElementById("envelopeHint");
+    const bgm = document.getElementById("bgm");
 
-      <div class="flash" id="flash"></div>
-      <div class="vignette"></div>
-    </main>
+    // ==============================
+    // Runtime config
+    // ==============================
+    const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
+    const HEART_COUNT = IS_MOBILE ? 82 : 126;
+    const HEART_RADIUS = IS_MOBILE ? 7.4 : 8.8;
 
-    <audio id="bgm" loop preload="auto">
-      <source src="music.mp3" type="audio/mpeg" />
-    </audio>
+    const HEART_COLORS = [
+      0xff5c8f,
+      0xff4d7f,
+      0xff6b94,
+      0xff3f74,
+      0xff7ea7,
+      0xff5a86,
+      0xff86ad,
+    ];
 
-    <script>
-      // ===============================
-      // DOM refs
-      // ===============================
-      const scene = document.getElementById("scene");
-      const fxCanvas = document.getElementById("fxCanvas");
-      const heartField = document.getElementById("heartField");
-      const letterStage = document.getElementById("letterStage");
-      const envelope = document.getElementById("envelope");
-      const hintText = document.getElementById("hintText");
-      const flash = document.getElementById("flash");
-      const intro = document.getElementById("intro");
+    // ==============================
+    // Three.js scene setup
+    // ==============================
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: "high-performance",
+    });
 
-      const musicToggle = document.getElementById("musicToggle");
-      const bgm = document.getElementById("bgm");
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, IS_MOBILE ? 1.6 : 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000, 0);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    app.appendChild(renderer.domElement);
 
-      // ===============================
-      // Runtime state
-      // ===============================
-      const HEART_COUNT = window.innerWidth < 600 ? 24 : 40;
-      const hearts = [];
-      const particles = [];
-      const HEART_PALETTES = [
-        { c1: "#ffd5e6", c2: "#ff5b91", c3: "#c8134a", outline: "#ffb8d3" },
-        { c1: "#ffe0ec", c2: "#ff6a8d", c3: "#de204f", outline: "#ffc0db" },
-        { c1: "#ffd7df", c2: "#ff4f75", c3: "#bf103a", outline: "#ffb3cb" },
-        { c1: "#ffd9e8", c2: "#ff527f", c3: "#d3184e", outline: "#ffc6df" },
-        { c1: "#ffe3f1", c2: "#ff739f", c3: "#cf2f63", outline: "#ffd0e7" },
-      ];
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x120109, IS_MOBILE ? 0.028 : 0.024);
 
-      let dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const ctx = fxCanvas.getContext("2d", { alpha: true });
+    const camera = new THREE.PerspectiveCamera(
+      48,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      180,
+    );
+    const cameraBaseRadius = IS_MOBILE ? 18.4 : 21;
+    camera.position.set(0, 1.8, cameraBaseRadius);
 
-      let selectedHeart = null;
-      let letterOpened = false;
-      let musicPlaying = false;
+    // Cinematic lighting
+    const ambient = new THREE.AmbientLight(0xffd6e8, 0.54);
+    scene.add(ambient);
 
-      let pointerX = 0;
-      let pointerY = 0;
-      let pointerTargetX = 0;
-      let pointerTargetY = 0;
-      let start = performance.now();
-      let lastFrame = performance.now();
+    const keyLight = new THREE.PointLight(0xff5a92, 22, 70, 2);
+    keyLight.position.set(8.5, 8.6, 13);
+    scene.add(keyLight);
 
-      // ===============================
-      // Canvas particles
-      // ===============================
-      function resizeCanvas() {
-        const w = window.innerWidth;
-        const h = window.innerHeight;
-        dpr = Math.min(window.devicePixelRatio || 1, 2);
-        fxCanvas.width = Math.floor(w * dpr);
-        fxCanvas.height = Math.floor(h * dpr);
-        fxCanvas.style.width = w + "px";
-        fxCanvas.style.height = h + "px";
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const fillLight = new THREE.PointLight(0xff2d66, 14, 70, 2);
+    fillLight.position.set(-10, -2.5, -7);
+    scene.add(fillLight);
 
-        particles.length = 0;
-        const count = w < 768 ? 50 : 78;
-        for (let i = 0; i < count; i += 1) {
-          particles.push(createParticle(w, h));
-        }
-      }
+    const topRim = new THREE.PointLight(0xffc4dc, 9, 75, 2);
+    topRim.position.set(0, 15, 0);
+    scene.add(topRim);
 
-      function createParticle(w, h) {
-        return {
-          x: Math.random() * w,
-          y: Math.random() * h,
-          r: Math.random() * 2 + 0.4,
-          phase: Math.random() * Math.PI * 2,
-          speed: Math.random() * 0.2 + 0.05,
-          sway: (Math.random() - 0.5) * 0.26,
-          alpha: Math.random() * 0.45 + 0.2,
-        };
-      }
+    // ==============================
+    // Post processing (Bloom + light DOF)
+    // ==============================
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
 
-      function drawParticles(w, h, t) {
-        ctx.clearRect(0, 0, w, h);
-        for (const p of particles) {
-          p.phase += 0.016;
-          p.y -= p.speed;
-          p.x += Math.sin(p.phase) * p.sway;
+    const baseAperture = IS_MOBILE ? 0.00011 : 0.00014;
+    const bokehPass = new BokehPass(scene, camera, {
+      focus: 12,
+      aperture: baseAperture,
+      maxblur: IS_MOBILE ? 0.002 : 0.0028,
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+    composer.addPass(bokehPass);
 
-          if (p.y < -8) {
-            p.y = h + 8;
-            p.x = Math.random() * w;
-          }
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      IS_MOBILE ? 0.95 : 1.2,
+      0.8,
+      0.15,
+    );
+    bloomPass.threshold = 0.05;
+    bloomPass.radius = 0.76;
+    composer.addPass(bloomPass);
 
-          const twinkle = 0.55 + Math.sin(p.phase * 1.9 + t * 0.001) * 0.45;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255, ${190 + Math.floor(twinkle * 48)}, ${214 + Math.floor(twinkle * 30)}, ${p.alpha})`;
-          ctx.shadowColor = "rgba(255, 120, 162, 0.56)";
-          ctx.shadowBlur = 12;
-          ctx.fill();
-        }
-      }
+    // ==============================
+    // Heart geometry (custom)
+    // ==============================
+    function createHeartGeometry() {
+      const shape = new THREE.Shape();
+      shape.moveTo(0, 0.3);
+      shape.bezierCurveTo(0, 0.02, -0.55, 0.02, -0.55, 0.48);
+      shape.bezierCurveTo(-0.55, 0.83, -0.2, 1.08, 0, 1.24);
+      shape.bezierCurveTo(0.2, 1.08, 0.55, 0.83, 0.55, 0.48);
+      shape.bezierCurveTo(0.55, 0.02, 0, 0.02, 0, 0.3);
 
-      // ===============================
-      // Heart generation + layered upward drift
-      // ===============================
-      function createHeartEl(index) {
-        const el = document.createElement("button");
-        el.type = "button";
-        el.className = "heart-3d";
-        el.setAttribute("aria-label", `Heart ${index + 1}`);
-
-        const isOutline = Math.random() < 0.45;
-        const size = isOutline
-          ? Math.random() * 30 + 24
-          : Math.random() * 42 + 34;
-        if (isOutline) el.classList.add("outline");
-
-        const palette =
-          HEART_PALETTES[Math.floor(Math.random() * HEART_PALETTES.length)];
-        el.style.setProperty("--c1", palette.c1);
-        el.style.setProperty("--c2", palette.c2);
-        el.style.setProperty("--c3", palette.c3);
-        el.style.setProperty("--outline", palette.outline);
-
-        el.style.setProperty("--size", `${size}px`);
-        el.innerHTML = `<span class="depth"></span><span class="shape"></span><span class="shine"></span>`;
-
-        const drift = {
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * (window.innerHeight + size * 2.2) - size * 1.1,
-          speed: (isOutline ? 22 : 34) + Math.random() * 34,
-          swayAmp: (isOutline ? 10 : 16) + Math.random() * 30,
-          swayFreq: 0.6 + Math.random() * 1.2,
-          phase: Math.random() * Math.PI * 2,
-          zDepth: -90 + Math.random() * 210,
-          tiltX: -10 + Math.random() * 20,
-          tiltY: -16 + Math.random() * 32,
-          roll: -10 + Math.random() * 20,
-          yawDrift: 0.7 + Math.random() * 1.4,
-          speedWave: 0.8 + Math.random() * 1.6,
-          selected: false,
-        };
-
-        el.addEventListener("click", () => focusHeart(el, drift));
-        heartField.appendChild(el);
-        hearts.push({ el, drift, size, isOutline });
-      }
-
-      function spawnHearts() {
-        hearts.length = 0;
-        heartField.innerHTML = "";
-        for (let i = 0; i < HEART_COUNT; i += 1) {
-          createHeartEl(i);
-        }
-      }
-
-      function updateHearts(time, dt) {
-        const t = (time - start) * 0.001;
-        const h = window.innerHeight;
-        const w = window.innerWidth;
-
-        for (const heart of hearts) {
-          const { drift, el, size, isOutline } = heart;
-          if (drift.selected) continue;
-
-          const speedBoost =
-            0.82 + Math.sin(t * drift.speedWave + drift.phase) * 0.18;
-          drift.y -= drift.speed * speedBoost * dt;
-          if (drift.y < -size * 1.8) {
-            drift.y = h + size * (0.7 + Math.random() * 1.3);
-            drift.x = Math.random() * w;
-          }
-
-          const sway =
-            Math.sin(t * drift.swayFreq + drift.phase) * drift.swayAmp;
-          const x = drift.x + sway + pointerX * (isOutline ? 20 : 34);
-          const y = drift.y + pointerY * (isOutline ? 10 : 16);
-          const z = drift.zDepth + Math.sin(t * 0.8 + drift.phase) * 24;
-          const scale = 0.72 + ((z + 120) / 300) * (isOutline ? 0.34 : 0.46);
-          const rx = drift.tiltX + Math.sin(t * 1.3 + drift.phase) * 5;
-          const ry =
-            drift.tiltY +
-            Math.cos(t * 1.1 + drift.phase) * 7 +
-            Math.sin(t * drift.yawDrift) * 2;
-          const rz = drift.roll + Math.sin(t * 1.5 + drift.phase) * 9;
-          const edgeFade = Math.min(
-            1,
-            Math.max(0.2, (y + size * 2) / (h + size * 2)),
-          );
-          const depthFade = Math.min(1, Math.max(0.35, 0.6 + z / 260));
-          const opacity = edgeFade * depthFade;
-
-          el.style.transform = `translate3d(${x - size / 2}px, ${y - size / 2}px, ${z}px) scale(${scale}) rotateX(${rx}deg) rotateY(${ry}deg) rotateZ(${rz}deg)`;
-          el.style.opacity = opacity.toFixed(3);
-        }
-      }
-
-      // ===============================
-      // Camera pan
-      // ===============================
-      function updateCamera(time) {
-        const t = (time - start) * 0.00022;
-        const driftX = Math.sin(t) * 10;
-        const driftY = Math.cos(t * 1.12) * 6;
-        const tx = driftX + pointerX * 7;
-        const ty = driftY + pointerY * 5;
-        scene.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(1.02)`;
-      }
-
-      function onPointerMove(x, y) {
-        pointerTargetX = ((x / window.innerWidth) * 2 - 1) * 0.45;
-        pointerTargetY = ((y / window.innerHeight) * 2 - 1) * 0.45;
-      }
-
-      // ===============================
-      // Interactions
-      // ===============================
-      function focusHeart(el, drift) {
-        if (selectedHeart) return;
-
-        selectedHeart = el;
-        drift.selected = true;
-        intro.classList.add("hide");
-
-        for (const h of hearts) {
-          if (h.el !== el) {
-            h.el.style.opacity = "0.17";
-            h.el.style.pointerEvents = "none";
-          }
-        }
-
-        heartField.classList.add("dimmed");
-        el.classList.add("selected");
-
-        flash.classList.add("active");
-        setTimeout(() => flash.classList.remove("active"), 260);
-
-        setTimeout(() => {
-          letterStage.classList.add("visible");
-        }, 740);
-      }
-
-      function openEnvelope() {
-        if (letterOpened || !selectedHeart) return;
-        letterOpened = true;
-        envelope.classList.add("open");
-        hintText.textContent = "Mãi yêu em";
-        burstMiniHearts();
-        setTimeout(burstMiniHearts, 320);
-        tryPlayMusic();
-      }
-
-      function burstMiniHearts() {
-        const rect = envelope.getBoundingClientRect();
-        const count = 12;
-
-        for (let i = 0; i < count; i += 1) {
-          const mini = document.createElement("span");
-          mini.className = "mini-heart";
-
-          const sx = rect.left + rect.width * (0.42 + Math.random() * 0.16);
-          const sy = rect.top + rect.height * 0.28;
-          const tx = (Math.random() - 0.5) * 170;
-          const ty = -(Math.random() * 140 + 46);
-
-          mini.style.left = `${sx}px`;
-          mini.style.top = `${sy}px`;
-          mini.style.setProperty("--tx", `${tx}px`);
-          mini.style.setProperty("--ty", `${ty}px`);
-          mini.style.animationDelay = `${Math.random() * 0.14}s`;
-
-          document.body.appendChild(mini);
-          setTimeout(() => mini.remove(), 2100);
-        }
-      }
-
-      // ===============================
-      // Music controls
-      // ===============================
-      async function tryPlayMusic() {
-        if (!bgm) return;
-        try {
-          bgm.volume = 0.56;
-          await bgm.play();
-          musicPlaying = true;
-          musicToggle.setAttribute("aria-pressed", "true");
-          musicToggle.textContent = "♫ Tắt nhạc";
-        } catch (_e) {
-          musicPlaying = false;
-          musicToggle.setAttribute("aria-pressed", "false");
-          musicToggle.textContent = "♪ Bật nhạc";
-        }
-      }
-
-      function stopMusic() {
-        if (!bgm) return;
-        bgm.pause();
-        bgm.currentTime = 0;
-        musicPlaying = false;
-        musicToggle.setAttribute("aria-pressed", "false");
-        musicToggle.textContent = "♪ Bật nhạc";
-      }
-
-      // ===============================
-      // Main loop
-      // ===============================
-      function tick(time) {
-        const w = window.innerWidth;
-        const h = window.innerHeight;
-        const dt = Math.min((time - lastFrame) / 1000, 0.04);
-        lastFrame = time;
-        pointerX += (pointerTargetX - pointerX) * 0.06;
-        pointerY += (pointerTargetY - pointerY) * 0.06;
-        drawParticles(w, h, time);
-        updateHearts(time, dt);
-        updateCamera(time);
-        requestAnimationFrame(tick);
-      }
-
-      // ===============================
-      // Events
-      // ===============================
-      window.addEventListener("resize", () => {
-        resizeCanvas();
-        spawnHearts();
+      const geometry = new THREE.ExtrudeGeometry(shape, {
+        depth: 0.34,
+        bevelEnabled: true,
+        bevelSegments: 3,
+        bevelSize: 0.08,
+        bevelThickness: 0.08,
+        steps: 1,
+        curveSegments: 26,
       });
 
-      window.addEventListener(
-        "mousemove",
-        (e) => onPointerMove(e.clientX, e.clientY),
-        { passive: true },
-      );
-      window.addEventListener(
-        "touchmove",
-        (e) => {
-          const t = e.touches[0];
-          if (!t) return;
-          onPointerMove(t.clientX, t.clientY);
-        },
-        { passive: true },
+      geometry.center();
+      geometry.rotateX(Math.PI);
+      geometry.computeVertexNormals();
+      return geometry;
+    }
+
+    function createHeartMaterial(colorHex) {
+      const baseColor = new THREE.Color(colorHex);
+      return new THREE.MeshPhysicalMaterial({
+        color: baseColor,
+        emissive: baseColor.clone().multiplyScalar(0.45),
+        emissiveIntensity: 0.95,
+        roughness: 0.24,
+        metalness: 0.1,
+        clearcoat: 1,
+        clearcoatRoughness: 0.16,
+        transparent: true,
+        opacity: 1,
+      });
+    }
+
+    const heartGeometry = createHeartGeometry();
+    const heartSphere = new THREE.Group();
+    scene.add(heartSphere);
+
+    const hearts = [];
+    const heartMeshes = [];
+    const golden = Math.PI * (3 - Math.sqrt(5));
+
+    function fibonacciPoint(index, total) {
+      const y = 1 - (index / (total - 1)) * 2;
+      const radius = Math.sqrt(Math.max(0, 1 - y * y));
+      const theta = golden * index;
+      const x = Math.cos(theta) * radius;
+      const z = Math.sin(theta) * radius;
+      return new THREE.Vector3(x, y, z);
+    }
+
+    function buildHeartSphere() {
+      for (let i = 0; i < HEART_COUNT; i += 1) {
+        const direction = fibonacciPoint(i, HEART_COUNT).normalize();
+        const shellRadius = HEART_RADIUS * THREE.MathUtils.randFloat(0.88, 1.1);
+
+        const mesh = new THREE.Mesh(
+          heartGeometry,
+          createHeartMaterial(HEART_COLORS[(Math.random() * HEART_COLORS.length) | 0]),
+        );
+
+        const scale = THREE.MathUtils.randFloat(IS_MOBILE ? 0.33 : 0.35, IS_MOBILE ? 0.58 : 0.64);
+        mesh.scale.setScalar(scale);
+        mesh.position.copy(direction).multiplyScalar(shellRadius);
+        mesh.lookAt(mesh.position.clone().multiplyScalar(2));
+        mesh.rotateY(THREE.MathUtils.randFloatSpread(0.9));
+
+        mesh.userData.isHeart = true;
+        heartSphere.add(mesh);
+
+        hearts.push({
+          mesh,
+          material: mesh.material,
+          direction,
+          radius: shellRadius,
+          baseScale: scale,
+          scaleNow: scale,
+          targetScale: scale,
+          opacityNow: 1,
+          targetOpacity: 1,
+          phase: Math.random() * Math.PI * 2,
+          floatSpeed: 0.8 + Math.random() * 1.8,
+          wobbleSpeed: 0.9 + Math.random() * 1.7,
+          spinSpeed: 0.4 + Math.random() * 0.85,
+          baseEmissive: 0.95,
+        });
+
+        heartMeshes.push(mesh);
+      }
+    }
+
+    buildHeartSphere();
+
+    // ==============================
+    // Star particles
+    // ==============================
+    function createStars(count, innerRadius, outerRadius, size, opacity) {
+      const geo = new THREE.BufferGeometry();
+      const positions = new Float32Array(count * 3);
+
+      for (let i = 0; i < count; i += 1) {
+        const r = THREE.MathUtils.randFloat(innerRadius, outerRadius);
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(THREE.MathUtils.randFloatSpread(2));
+
+        positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+        positions[i * 3 + 1] = r * Math.cos(phi);
+        positions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+      }
+
+      geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+
+      const mat = new THREE.PointsMaterial({
+        color: 0xffcce0,
+        size,
+        transparent: true,
+        opacity,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      });
+
+      const points = new THREE.Points(geo, mat);
+      scene.add(points);
+      return points;
+    }
+
+    const starsNear = createStars(IS_MOBILE ? 500 : 820, 13, 55, IS_MOBILE ? 0.085 : 0.095, 0.62);
+    const starsFar = createStars(IS_MOBILE ? 420 : 760, 24, 82, IS_MOBILE ? 0.065 : 0.075, 0.34);
+
+    // ==============================
+    // Interaction + animation state
+    // ==============================
+    const raycaster = new THREE.Raycaster();
+    const pointerNDC = new THREE.Vector2();
+
+    let selectedHeart = null;
+    let envelopeVisible = false;
+    let envelopeOpened = false;
+
+    let focusProgress = 0;
+    const focusFromCam = new THREE.Vector3();
+    const focusToCam = new THREE.Vector3();
+    const focusFromLook = new THREE.Vector3();
+    const focusToLook = new THREE.Vector3();
+
+    const cameraTarget = new THREE.Vector3();
+    const lookTarget = new THREE.Vector3(0, 0, 0);
+    const currentLook = new THREE.Vector3(0, 0, 0);
+    const tmpVec = new THREE.Vector3();
+
+    const pointerCurrent = new THREE.Vector2(0, 0);
+    const pointerTarget = new THREE.Vector2(0, 0);
+
+    let timeline = 0;
+    let bloomTarget = bloomPass.strength;
+    let timeScale = 1;
+    let timeScaleTarget = 1;
+
+    // ==============================
+    // Audio controls
+    // ==============================
+    let audioActive = false;
+
+    async function tryStartMusic() {
+      if (audioActive) return;
+      try {
+        bgm.volume = 0.55;
+        await bgm.play();
+        audioActive = true;
+        musicBtn.setAttribute("aria-pressed", "true");
+        musicBtn.textContent = "♫ Tắt nhạc";
+      } catch (_error) {
+        audioActive = false;
+      }
+    }
+
+    function stopMusic() {
+      bgm.pause();
+      bgm.currentTime = 0;
+      audioActive = false;
+      musicBtn.setAttribute("aria-pressed", "false");
+      musicBtn.textContent = "♪ Bật nhạc";
+    }
+
+    musicBtn.addEventListener("click", async () => {
+      if (audioActive) stopMusic();
+      else await tryStartMusic();
+    });
+
+    // ==============================
+    // Envelope interactions
+    // ==============================
+    function spawnMiniHearts() {
+      const rect = envelope3d.getBoundingClientRect();
+      const amount = IS_MOBILE ? 12 : 18;
+
+      for (let i = 0; i < amount; i += 1) {
+        const mini = document.createElement("span");
+        mini.className = "mini-heart";
+
+        const startX = rect.left + rect.width * (0.42 + Math.random() * 0.16);
+        const startY = rect.top + rect.height * 0.27;
+        const tx = (Math.random() - 0.5) * (IS_MOBILE ? 150 : 190);
+        const ty = -(Math.random() * (IS_MOBILE ? 120 : 165) + 40);
+
+        mini.style.left = `${startX}px`;
+        mini.style.top = `${startY}px`;
+        mini.style.setProperty("--tx", `${tx}px`);
+        mini.style.setProperty("--ty", `${ty}px`);
+        mini.style.animationDelay = `${Math.random() * 0.15}s`;
+
+        document.body.appendChild(mini);
+        setTimeout(() => mini.remove(), 2100);
+      }
+    }
+
+    function triggerSlowMotion() {
+      timeScaleTarget = 0.42;
+      bloomTarget = IS_MOBILE ? 1.7 : 2.05;
+
+      burstLight.classList.add("active");
+      setTimeout(() => burstLight.classList.remove("active"), 720);
+
+      setTimeout(() => {
+        timeScaleTarget = 1;
+        bloomTarget = selectedHeart ? (IS_MOBILE ? 1.28 : 1.5) : (IS_MOBILE ? 1 : 1.2);
+      }, 1200);
+    }
+
+    function openEnvelope() {
+      if (!envelopeVisible || envelopeOpened) return;
+      envelopeOpened = true;
+
+      envelope3d.classList.add("open");
+      envelopeHint.textContent = "Mãi yêu em ❤️";
+      spawnMiniHearts();
+      setTimeout(spawnMiniHearts, 300);
+      triggerSlowMotion();
+      tryStartMusic();
+    }
+
+    envelope3d.addEventListener("click", openEnvelope);
+    envelope3d.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openEnvelope();
+      }
+    });
+
+    function showEnvelope() {
+      if (envelopeVisible) return;
+      envelopeVisible = true;
+      envelopeStage.classList.add("visible");
+    }
+
+    // ==============================
+    // Heart selection
+    // ==============================
+    function selectHeart(targetMesh) {
+      if (selectedHeart) return;
+
+      selectedHeart = targetMesh;
+      sceneHint.classList.add("hide");
+
+      focusProgress = 0;
+      focusFromCam.copy(camera.position);
+      focusFromLook.copy(currentLook);
+
+      targetMesh.getWorldPosition(focusToLook);
+      const outward = focusToLook.clone().normalize();
+      focusToCam.copy(focusToLook).add(outward.multiplyScalar(IS_MOBILE ? 3.1 : 3.8));
+
+      for (const heart of hearts) {
+        if (heart.mesh === targetMesh) {
+          heart.targetOpacity = 1;
+          heart.targetScale = heart.baseScale * 1.24;
+        } else {
+          heart.targetOpacity = 0.08;
+          heart.targetScale = heart.baseScale * 0.78;
+        }
+      }
+
+      bloomTarget = IS_MOBILE ? 1.32 : 1.58;
+      setTimeout(showEnvelope, 780);
+    }
+
+    function handlePointerDown(event) {
+      tryStartMusic();
+      if (selectedHeart) return;
+
+      const rect = renderer.domElement.getBoundingClientRect();
+      const clientX = event.clientX;
+      const clientY = event.clientY;
+
+      pointerNDC.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      pointerNDC.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(pointerNDC, camera);
+      const hits = raycaster.intersectObjects(heartMeshes, false);
+      if (hits.length > 0) {
+        selectHeart(hits[0].object);
+      }
+    }
+
+    renderer.domElement.addEventListener("pointerdown", handlePointerDown, { passive: true });
+
+    // ==============================
+    // Camera pointer parallax
+    // ==============================
+    function updatePointer(clientX, clientY) {
+      const x = (clientX / window.innerWidth) * 2 - 1;
+      const y = (clientY / window.innerHeight) * 2 - 1;
+      pointerTarget.set(x * 0.45, y * 0.45);
+    }
+
+    window.addEventListener("mousemove", (event) => {
+      updatePointer(event.clientX, event.clientY);
+    }, { passive: true });
+
+    window.addEventListener("touchmove", (event) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      updatePointer(touch.clientX, touch.clientY);
+    }, { passive: true });
+
+    // ==============================
+    // Resize handling
+    // ==============================
+    function onResize() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, IS_MOBILE ? 1.6 : 2));
+      renderer.setSize(width, height);
+      composer.setSize(width, height);
+      bloomPass.setSize(width, height);
+      if (typeof bokehPass.setSize === "function") {
+        bokehPass.setSize(width, height);
+      }
+    }
+
+    window.addEventListener("resize", onResize);
+
+    // ==============================
+    // Animation loop
+    // ==============================
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const rawDelta = Math.min(clock.getDelta(), 0.05);
+      timeScale += (timeScaleTarget - timeScale) * 0.06;
+      const delta = rawDelta * timeScale;
+      timeline += delta;
+
+      pointerCurrent.lerp(pointerTarget, 0.06);
+
+      // Heart sphere motion
+      heartSphere.rotation.y += delta * (selectedHeart ? 0.06 : 0.16);
+      heartSphere.rotation.x = Math.sin(timeline * 0.22) * 0.13;
+
+      for (const heart of hearts) {
+        const { mesh, material, direction } = heart;
+
+        const radialPulse = Math.sin(timeline * heart.floatSpeed + heart.phase) * 0.28;
+        const radial = heart.radius + radialPulse;
+        mesh.position.copy(direction).multiplyScalar(radial);
+
+        mesh.lookAt(tmpVec.copy(mesh.position).multiplyScalar(1.9));
+        mesh.rotateY(timeline * heart.spinSpeed + heart.phase * 0.3);
+        mesh.rotateX(Math.sin(timeline * heart.wobbleSpeed + heart.phase) * 0.16);
+
+        heart.opacityNow = THREE.MathUtils.lerp(heart.opacityNow, heart.targetOpacity, 0.08);
+        material.opacity = heart.opacityNow;
+        material.emissiveIntensity = heart.baseEmissive * (0.38 + heart.opacityNow * 0.92);
+
+        let pulseFactor = 1;
+        if (selectedHeart && mesh === selectedHeart) {
+          pulseFactor = 1 + Math.sin(timeline * 3.7) * 0.06;
+        }
+
+        const scaleTarget = heart.targetScale * pulseFactor;
+        heart.scaleNow = THREE.MathUtils.lerp(heart.scaleNow, scaleTarget, 0.08);
+        mesh.scale.setScalar(heart.scaleNow);
+      }
+
+      // Camera cinematic movement
+      if (!selectedHeart) {
+        const orbit = timeline * 0.15;
+        const radius = cameraBaseRadius + pointerCurrent.x * 1.35;
+
+        cameraTarget.set(
+          Math.cos(orbit) * radius,
+          1.9 + Math.sin(timeline * 0.4) * 1.05 + pointerCurrent.y * 0.95,
+          Math.sin(orbit) * radius,
+        );
+
+        lookTarget.set(pointerCurrent.x * 0.95, pointerCurrent.y * 0.45, 0);
+        camera.position.lerp(cameraTarget, 0.045);
+        currentLook.lerp(lookTarget, 0.08);
+      } else {
+        focusProgress = Math.min(1, focusProgress + delta * 0.82);
+        const k = 1 - Math.pow(1 - focusProgress, 3);
+
+        cameraTarget.copy(focusFromCam).lerp(focusToCam, k);
+        lookTarget.copy(focusFromLook).lerp(focusToLook, k);
+
+        camera.position.copy(cameraTarget);
+        currentLook.copy(lookTarget);
+      }
+
+      camera.lookAt(currentLook);
+
+      // Stars movement
+      starsNear.rotation.y += delta * 0.012;
+      starsNear.rotation.x = Math.sin(timeline * 0.14) * 0.08;
+      starsNear.material.opacity = 0.56 + Math.sin(timeline * 0.8) * 0.1;
+
+      starsFar.rotation.y -= delta * 0.004;
+      starsFar.material.opacity = 0.26 + Math.sin(timeline * 0.5 + 1.2) * 0.06;
+
+      // Post FX tuning
+      bloomPass.strength = THREE.MathUtils.lerp(bloomPass.strength, bloomTarget, 0.06);
+
+      const desiredFocus = camera.position.distanceTo(currentLook);
+      const bokehUniforms = bokehPass.materialBokeh.uniforms;
+      bokehUniforms.focus.value = THREE.MathUtils.lerp(
+        bokehUniforms.focus.value,
+        desiredFocus,
+        0.08,
       );
 
-      envelope.addEventListener("click", openEnvelope);
-      envelope.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          openEnvelope();
-        }
-      });
+      const apertureTarget = selectedHeart ? baseAperture * 1.6 : baseAperture;
+      bokehUniforms.aperture.value = THREE.MathUtils.lerp(
+        bokehUniforms.aperture.value,
+        apertureTarget,
+        0.06,
+      );
 
-      musicToggle.addEventListener("click", async () => {
-        if (musicPlaying) stopMusic();
-        else await tryPlayMusic();
-      });
+      composer.render();
+    }
 
-      // ===============================
-      // Init
-      // ===============================
-      resizeCanvas();
-      spawnHearts();
-      requestAnimationFrame(tick);
-    </script>
-  </body>
+    onResize();
+    animate();
+  </script>
+</body>
 </html>
