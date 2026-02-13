@@ -248,10 +248,9 @@
     <div class="letter-card">
       <div class="letter-content">
         <h1 class="letter-title">Happy Valentine's Day ❤️</h1>
-        <p class="letter-text">Chúc em Valentine vui vẻ ❤️
+        <p class="letter-text">Chúc Phương Valentine vui vẻ ❤️
 
-          Luôn rạng rỡ như những đóa hoa
-          Anh luôn ở đây vì em</p>
+          Luôn rạng rỡ như những đóa hoa</p>
       </div>
     </div>
   </div>
@@ -295,6 +294,7 @@
     let timeScaleTarget = 1;
     let cupidActive = false;
     let musicPlaying = false;
+    let envelopeVisible = false;
 
     // ===========================
     // Renderer
@@ -379,7 +379,6 @@
     function createPerfectHeartGeometry() {
       const shape = new THREE.Shape();
 
-      // Perfect heart curve using bezier
       const x = 0, y = 0;
       shape.moveTo(x, y + 0.3);
       shape.bezierCurveTo(x, y, x - 0.6, y, x - 0.6, y + 0.5);
@@ -460,364 +459,66 @@
     }
 
     // ===========================
-    // Premium Cupid Character (Ultra Detailed & Beautiful)
+    // Cupid Sprite (2D Image)
     // ===========================
-    const cupidGroup = new THREE.Group();
-    cupidGroup.visible = false;
-    scene.add(cupidGroup);
-
-    // === BODY (Smooth pear-shaped chibi body) ===
-    const bodyGeo = new THREE.SphereGeometry(0.45, 32, 32);
-    bodyGeo.scale(1, 1.35, 0.92);
-    const bodyMat = new THREE.MeshPhysicalMaterial({
-      color: 0xffb8d9,
-      roughness: 0.14,
-      metalness: 0.02,
-      clearcoat: 0.85,
-      clearcoatRoughness: 0.08,
-    });
-    const body = new THREE.Mesh(bodyGeo, bodyMat);
-    body.position.y = 0.22;
-    body.castShadow = true;
-    cupidGroup.add(body);
-
-    // Belly highlight (lighter pink)
-    const bellyGeo = new THREE.SphereGeometry(0.34, 32, 32);
-    bellyGeo.scale(1, 1.15, 0.48);
-    const bellyMat = new THREE.MeshPhysicalMaterial({
-      color: 0xffdaec,
-      roughness: 0.18,
-      metalness: 0.01,
-      clearcoat: 0.65,
-    });
-    const belly = new THREE.Mesh(bellyGeo, bellyMat);
-    belly.position.set(0, 0.16, 0.27);
-    cupidGroup.add(belly);
-
-    // === HEAD (Large chibi head) ===
-    const headGeo = new THREE.SphereGeometry(0.52, 32, 32);
-    headGeo.scale(1, 1.06, 1.02);
-    const headMat = new THREE.MeshPhysicalMaterial({
-      color: 0xffe8f3,
-      roughness: 0.11,
-      metalness: 0.01,
-      clearcoat: 0.75,
-      clearcoatRoughness: 0.06,
-    });
-    const head = new THREE.Mesh(headGeo, headMat);
-    head.position.y = 0.98;
-    head.castShadow = true;
-    cupidGroup.add(head);
-
-    // === EYES (Anime-style with white base and dark pupils) ===
-    // Eye whites
-    const eyeWhiteGeo = new THREE.SphereGeometry(0.13, 20, 20);
-    eyeWhiteGeo.scale(1.25, 1.05, 0.85);
-    const eyeWhiteMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-
-    const eyeWhiteL = new THREE.Mesh(eyeWhiteGeo, eyeWhiteMat);
-    eyeWhiteL.position.set(-0.17, 1.02, 0.44);
-    cupidGroup.add(eyeWhiteL);
-
-    const eyeWhiteR = new THREE.Mesh(eyeWhiteGeo, eyeWhiteMat);
-    eyeWhiteR.position.set(0.17, 1.02, 0.44);
-    cupidGroup.add(eyeWhiteR);
-
-    // Pupils (dark brown with shine)
-    const pupilGeo = new THREE.SphereGeometry(0.085, 18, 18);
-    const pupilMat = new THREE.MeshPhysicalMaterial({
-      color: 0x2b1810,
-      roughness: 0.04,
-      metalness: 0.12,
-    });
-
-    const pupilL = new THREE.Mesh(pupilGeo, pupilMat);
-    pupilL.position.set(-0.17, 1.0, 0.5);
-    cupidGroup.add(pupilL);
-
-    const pupilR = new THREE.Mesh(pupilGeo, pupilMat);
-    pupilR.position.set(0.17, 1.0, 0.5);
-    cupidGroup.add(pupilR);
-
-    // Eye shine highlights (tiny white dots)
-    const shineGeo = new THREE.SphereGeometry(0.032, 10, 10);
-    const shineMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-
-    const shineL1 = new THREE.Mesh(shineGeo, shineMat);
-    shineL1.position.set(-0.14, 1.04, 0.54);
-    cupidGroup.add(shineL1);
-
-    const shineL2 = new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 8), shineMat);
-    shineL2.position.set(-0.2, 0.97, 0.53);
-    cupidGroup.add(shineL2);
-
-    const shineR1 = new THREE.Mesh(shineGeo, shineMat);
-    shineR1.position.set(0.2, 1.04, 0.54);
-    cupidGroup.add(shineR1);
-
-    const shineR2 = new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 8), shineMat);
-    shineR2.position.set(0.14, 0.97, 0.53);
-    cupidGroup.add(shineR2);
-
-    // === BLUSH (Soft pink cheeks) ===
-    const blushGeo = new THREE.SphereGeometry(0.15, 18, 18);
-    blushGeo.scale(1.35, 0.72, 0.38);
-    const blushMat = new THREE.MeshBasicMaterial({
-      color: 0xffb5cc,
-      transparent: true,
-      opacity: 0.52,
-    });
-
-    const blushL = new THREE.Mesh(blushGeo, blushMat);
-    blushL.position.set(-0.37, 0.9, 0.4);
-    cupidGroup.add(blushL);
-
-    const blushR = new THREE.Mesh(blushGeo, blushMat);
-    blushR.position.set(0.37, 0.9, 0.4);
-    cupidGroup.add(blushR);
-
-    // === SMILE (Cute curved mouth) ===
-    const smileGeo = new THREE.TorusGeometry(0.16, 0.027, 10, 18, Math.PI);
-    const smileMat = new THREE.MeshBasicMaterial({ color: 0xff6699 });
-    const smile = new THREE.Mesh(smileGeo, smileMat);
-    smile.position.set(0, 0.76, 0.47);
-    smile.rotation.z = Math.PI;
-    cupidGroup.add(smile);
-
-    // === NOSE (Tiny pink button) ===
-    const noseGeo = new THREE.SphereGeometry(0.042, 10, 10);
-    const noseMat = new THREE.MeshPhysicalMaterial({
-      color: 0xffb8cc,
-      roughness: 0.28,
-    });
-    const nose = new THREE.Mesh(noseGeo, noseMat);
-    nose.position.set(0, 0.9, 0.5);
-    cupidGroup.add(nose);
-
-    // === HAIR (Curly golden locks) ===
-    const hairMat = new THREE.MeshPhysicalMaterial({
-      color: 0xffd670,
-      roughness: 0.32,
-      metalness: 0.12,
-      clearcoat: 0.55,
-    });
-
-    // Top curls (crown)
-    for (let i = 0; i < 9; i++) {
-      const curlGeo = new THREE.SphereGeometry(0.13 + Math.random() * 0.05, 18, 18);
-      const curl = new THREE.Mesh(curlGeo, hairMat);
-      const angle = (i / 9) * Math.PI * 2;
-      const radius = 0.4;
-      curl.position.set(
-        Math.cos(angle) * radius,
-        1.32 + Math.sin(i * 0.9) * 0.12,
-        Math.sin(angle) * radius - 0.12
-      );
-      curl.castShadow = true;
-      cupidGroup.add(curl);
-    }
-
-    // Side bangs
-    const bangGeo = new THREE.SphereGeometry(0.16, 18, 18);
-    const bangL = new THREE.Mesh(bangGeo, hairMat);
-    bangL.position.set(-0.34, 1.08, 0.3);
-    bangL.scale.set(0.85, 1.25, 0.72);
-    cupidGroup.add(bangL);
-
-    const bangR = new THREE.Mesh(bangGeo, hairMat);
-    bangR.position.set(0.34, 1.08, 0.3);
-    bangR.scale.set(0.85, 1.25, 0.72);
-    cupidGroup.add(bangR);
-
-    // === WINGS (Elegant angel wings with feathers) ===
-    const wingShape = new THREE.Shape();
-    wingShape.moveTo(0, 0);
-    wingShape.bezierCurveTo(0.22, 0.35, 0.45, 0.68, 0.55, 1.08);
-    wingShape.bezierCurveTo(0.62, 1.38, 0.72, 1.58, 0.78, 1.78);
-    wingShape.bezierCurveTo(0.68, 1.55, 0.52, 1.25, 0.38, 0.95);
-    wingShape.bezierCurveTo(0.22, 0.62, 0.11, 0.32, 0, 0.12);
-
-    const wingGeo = new THREE.ExtrudeGeometry(wingShape, {
-      depth: 0.09,
-      bevelEnabled: true,
-      bevelSize: 0.045,
-      bevelThickness: 0.045,
-      bevelSegments: 4,
-      curveSegments: 26,
-    });
-
-    const wingMat = new THREE.MeshPhysicalMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.92,
-      emissive: 0xfff6ff,
-      emissiveIntensity: 0.55,
-      roughness: 0.08,
-      metalness: 0.04,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.04,
-      transmission: 0.12,
-      side: THREE.DoubleSide,
-    });
-
-    const wingL = new THREE.Mesh(wingGeo, wingMat);
-    wingL.position.set(-0.38, 0.54, -0.12);
-    wingL.rotation.y = Math.PI / 4.8;
-    wingL.rotation.z = -Math.PI / 14;
-    wingL.scale.set(0.72, 0.72, 0.72);
-    wingL.castShadow = true;
-    cupidGroup.add(wingL);
-
-    const wingR = new THREE.Mesh(wingGeo, wingMat);
-    wingR.position.set(0.38, 0.54, -0.12);
-    wingR.rotation.y = -Math.PI / 4.8;
-    wingR.rotation.z = Math.PI / 14;
-    wingR.scale.set(-0.72, 0.72, 0.72);
-    wingR.castShadow = true;
-    cupidGroup.add(wingR);
-
-    // Wing feather details
-    const featherMat = new THREE.MeshPhysicalMaterial({
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.85,
-      emissive: 0xfff8ff,
-      emissiveIntensity: 0.4,
-      side: THREE.DoubleSide,
-    });
-
-    for (let w = 0; w < 2; w++) {
-      const wing = w === 0 ? wingL : wingR;
-      for (let i = 0; i < 6; i++) {
-        const featherGeo = new THREE.SphereGeometry(0.065, 10, 10);
-        featherGeo.scale(0.42, 1.28, 0.32);
-        const feather = new THREE.Mesh(featherGeo, featherMat);
-        feather.position.set(
-          (w === 0 ? -1 : 1) * (0.32 + i * 0.09),
-          0.32 + i * 0.28,
-          -0.06
-        );
-        feather.rotation.z = (w === 0 ? -1 : 1) * (Math.PI / 5.5 + i * 0.12);
-        wing.add(feather);
-      }
-    }
-
-    // === ARMS (Cute chubby arms) ===
-    const armGeo = new THREE.CapsuleGeometry(0.085, 0.38, 10, 18);
-    const armMat = new THREE.MeshPhysicalMaterial({
-      color: 0xffb8d9,
-      roughness: 0.18,
-      metalness: 0.02,
-      clearcoat: 0.68,
-    });
-
-    const armL = new THREE.Mesh(armGeo, armMat);
-    armL.position.set(-0.42, 0.32, 0.12);
-    armL.rotation.z = Math.PI / 3.8;
-    armL.castShadow = true;
-    cupidGroup.add(armL);
-
-    const armR = new THREE.Mesh(armGeo, armMat);
-    armR.position.set(0.42, 0.32, 0.12);
-    armR.rotation.z = -Math.PI / 3.8;
-    armR.castShadow = true;
-    cupidGroup.add(armR);
-
-    // Hands (chubby little hands)
-    const handGeo = new THREE.SphereGeometry(0.11, 18, 18);
-    const handL = new THREE.Mesh(handGeo, armMat);
-    handL.position.set(-0.58, 0.06, 0.17);
-    cupidGroup.add(handL);
-
-    const handR = new THREE.Mesh(handGeo, armMat);
-    handR.position.set(0.58, 0.06, 0.17);
-    cupidGroup.add(handR);
-
-    // === BOW & ARROW (Elegant golden weapon) ===
-    const bowMat = new THREE.MeshPhysicalMaterial({
-      color: 0xffd700,
-      roughness: 0.13,
-      metalness: 0.85,
-      emissive: 0xffcc00,
-      emissiveIntensity: 0.45,
-      clearcoat: 1.0,
-    });
-
-    // Bow body (curved elegantly)
-    const bowCurve = new THREE.QuadraticBezierCurve3(
-      new THREE.Vector3(0, -0.42, 0),
-      new THREE.Vector3(0.17, 0, 0),
-      new THREE.Vector3(0, 0.42, 0)
+    const cupidTexture = new THREE.TextureLoader().load('https://i.imgur.com/8xQZJ5M.png');
+    const cupidSprite = new THREE.Sprite(
+      new THREE.SpriteMaterial({
+        map: cupidTexture,
+        transparent: true,
+        opacity: 1,
+      })
     );
-    const bowTubeGeo = new THREE.TubeGeometry(bowCurve, 22, 0.032, 10, false);
-    const bowBody = new THREE.Mesh(bowTubeGeo, bowMat);
-    bowBody.position.set(0.52, 0.22, 0.22);
-    bowBody.rotation.y = -Math.PI / 5.5;
-    cupidGroup.add(bowBody);
+    cupidSprite.scale.set(3, 3, 1);
+    cupidSprite.visible = false;
+    scene.add(cupidSprite);
 
-    // Bow string (silver)
-    const stringGeo = new THREE.CylinderGeometry(0.011, 0.011, 0.78, 10);
-    const stringMat = new THREE.MeshBasicMaterial({ color: 0xe5e5e5 });
-    const bowString = new THREE.Mesh(stringGeo, stringMat);
-    bowString.position.set(0.47, 0.22, 0.22);
-    bowString.rotation.z = Math.PI / 2;
-    cupidGroup.add(bowString);
+    // ===========================
+    // 3D Envelope (appears after cupid catches heart)
+    // ===========================
+    const envelopeGroup = new THREE.Group();
+    envelopeGroup.visible = false;
+    scene.add(envelopeGroup);
 
-    // Arrow shaft (wooden brown)
-    const arrowShaftGeo = new THREE.CylinderGeometry(0.017, 0.017, 0.52, 10);
-    const arrowMat = new THREE.MeshPhysicalMaterial({
-      color: 0xa0522d,
-      roughness: 0.62,
+    // Envelope back
+    const envBackGeo = new THREE.BoxGeometry(2.2, 1.5, 0.05);
+    const envBackMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffe8f0,
+      roughness: 0.3,
+      metalness: 0.1,
+      clearcoat: 0.5,
     });
-    const arrowShaft = new THREE.Mesh(arrowShaftGeo, arrowMat);
-    arrowShaft.position.set(0.47, 0.22, 0.27);
-    arrowShaft.rotation.z = Math.PI / 2;
-    cupidGroup.add(arrowShaft);
+    const envBack = new THREE.Mesh(envBackGeo, envBackMat);
+    envBack.castShadow = true;
+    envelopeGroup.add(envBack);
 
-    // Arrow tip (heart-shaped golden tip!)
-    const arrowTipShape = new THREE.Shape();
-    const s = 0.085;
-    arrowTipShape.moveTo(0, 0);
-    arrowTipShape.bezierCurveTo(0, -s * 0.32, -s * 0.52, -s * 0.32, -s * 0.52, s * 0.22);
-    arrowTipShape.bezierCurveTo(-s * 0.52, s * 0.65, 0, s * 0.85, 0, s * 1.05);
-    arrowTipShape.bezierCurveTo(0, s * 0.85, s * 0.52, s * 0.65, s * 0.52, s * 0.22);
-    arrowTipShape.bezierCurveTo(s * 0.52, -s * 0.32, 0, -s * 0.32, 0, 0);
-
-    const arrowTipGeo = new THREE.ExtrudeGeometry(arrowTipShape, {
-      depth: 0.025,
-      bevelEnabled: true,
-      bevelSize: 0.01,
-      bevelThickness: 0.01,
+    // Envelope flap
+    const envFlapGeo = new THREE.BoxGeometry(2.2, 1.5, 0.05);
+    const envFlapMat = new THREE.MeshPhysicalMaterial({
+      color: 0xffc4dc,
+      roughness: 0.25,
+      metalness: 0.1,
+      clearcoat: 0.6,
     });
-    const arrowTip = new THREE.Mesh(arrowTipGeo, bowMat);
-    arrowTip.position.set(0.73, 0.22, 0.26);
-    arrowTip.rotation.y = Math.PI / 2;
-    cupidGroup.add(arrowTip);
+    const envFlap = new THREE.Mesh(envFlapGeo, envFlapMat);
+    envFlap.position.y = 0.75;
+    envFlap.rotation.x = -Math.PI / 3.2;
+    envFlap.castShadow = true;
+    envelopeGroup.add(envFlap);
 
-    // Arrow feathers (pink decorative)
-    const arrowFeatherMat = new THREE.MeshBasicMaterial({
-      color: 0xffb8d9,
-      transparent: true,
-      opacity: 0.75,
-      side: THREE.DoubleSide,
+    // Heart seal on envelope
+    const sealGeo = createPerfectHeartGeometry();
+    const sealMat = new THREE.MeshPhysicalMaterial({
+      color: 0xff3366,
+      emissive: 0xff1144,
+      emissiveIntensity: 1.0,
+      roughness: 0.2,
+      metalness: 0.1,
     });
-
-    for (let i = 0; i < 3; i++) {
-      const featherShape = new THREE.Shape();
-      featherShape.moveTo(0, 0);
-      featherShape.lineTo(0.09, 0.14);
-      featherShape.lineTo(0, 0.11);
-      featherShape.lineTo(-0.09, 0.14);
-
-      const featherGeo = new THREE.ShapeGeometry(featherShape);
-      const feather = new THREE.Mesh(featherGeo, arrowFeatherMat);
-      feather.position.set(0.21, 0.22, 0.27);
-      feather.rotation.y = (i / 3) * Math.PI * 2;
-      feather.rotation.z = Math.PI / 2;
-      cupidGroup.add(feather);
-    }
-
-    cupidGroup.scale.setScalar(1.45);
+    const seal = new THREE.Mesh(sealGeo, sealMat);
+    seal.scale.setScalar(0.35);
+    seal.position.set(0, 0.4, 0.12);
+    envelopeGroup.add(seal);
 
     // ===========================
     // Floating Particles
@@ -851,8 +552,6 @@
     const pointer = new THREE.Vector2();
 
     function onPointerDown(event) {
-      if (heartClicked || cupidActive) return;
-
       const x = event.clientX ?? event.touches?.[0]?.clientX;
       const y = event.clientY ?? event.touches?.[0]?.clientY;
       if (x === undefined || y === undefined) return;
@@ -861,6 +560,19 @@
       pointer.y = -(y / window.innerHeight) * 2 + 1;
 
       raycaster.setFromCamera(pointer, camera);
+
+      // Check envelope click
+      if (envelopeVisible) {
+        const envHits = raycaster.intersectObjects([envBack, envFlap, seal]);
+        if (envHits.length > 0) {
+          openLetter();
+          return;
+        }
+      }
+
+      // Check heart click
+      if (heartClicked || cupidActive) return;
+
       const meshes = hearts.map(h => h.mesh);
       const hits = raycaster.intersectObjects(meshes);
 
@@ -905,12 +617,11 @@
       setTimeout(() => flashOverlay.classList.remove('active'), 600);
 
       // Cupid appears from side
-      cupidGroup.position.set(-12, selectedHeart.verticalOffset, 0);
-      cupidGroup.rotation.y = Math.PI / 4;
-      cupidGroup.visible = true;
+      cupidSprite.position.set(-12, selectedHeart.verticalOffset, 0);
+      cupidSprite.visible = true;
 
       // Animate cupid jumping to heart
-      const startPos = cupidGroup.position.clone();
+      const startPos = cupidSprite.position.clone();
       const heartWorldPos = new THREE.Vector3();
       selectedHeart.mesh.getWorldPosition(heartWorldPos);
       const targetPos = heartWorldPos.clone();
@@ -922,17 +633,15 @@
         const progress = Math.min(elapsed / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
 
-        cupidGroup.position.lerpVectors(startPos, targetPos, eased);
-        cupidGroup.position.y += Math.sin(progress * Math.PI) * 2.5; // Jump arc
-        cupidGroup.rotation.y = Math.PI / 4 - progress * Math.PI / 4;
+        cupidSprite.position.lerpVectors(startPos, targetPos, eased);
+        cupidSprite.position.y += Math.sin(progress * Math.PI) * 2.5;
 
         // Sparkle trail
-        if (Math.random() > 0.65) spawnSparkle(cupidGroup.position);
+        if (Math.random() > 0.65) spawnSparkle(cupidSprite.position);
 
         if (progress < 1) {
           requestAnimationFrame(animateCupid);
         } else {
-          // Cupid catches heart
           catchHeart();
         }
       }
@@ -952,19 +661,51 @@
       // Hide heart
       selectedHeart.mesh.visible = false;
 
-      // Transform to envelope (simplified - show letter overlay)
+      // Show envelope after cupid catches
       setTimeout(() => {
-        cupidGroup.visible = false;
-        timeScaleTarget = 0.5;
+        cupidSprite.visible = false;
+        timeScaleTarget = 0.6;
         bloomPass.strength = 2.0;
 
-        letterOverlay.classList.add('show');
-        spawnConfetti();
+        // Show envelope in 3D scene
+        envelopeGroup.position.copy(selectedHeart.mesh.position);
+        envelopeGroup.visible = true;
+        envelopeVisible = true;
+
+        // Update hint
+        clickHint.textContent = 'Chạm vào phong bì ❤️';
+        clickHint.classList.remove('hidden');
       }, 1000);
 
       setTimeout(() => {
         timeScaleTarget = 1;
       }, 3500);
+    }
+
+    // ===========================
+    // Open Letter
+    // ===========================
+    function openLetter() {
+      envelopeVisible = false;
+      clickHint.classList.add('hidden');
+
+      // Animate envelope opening
+      const startTime = performance.now();
+      const duration = 800;
+
+      function animateEnvOpen(now) {
+        const t = (now - startTime) / duration;
+        if (t >= 1) {
+          envelopeGroup.visible = false;
+          letterOverlay.classList.add('show');
+          spawnConfetti();
+          return;
+        }
+
+        envFlap.rotation.x = -Math.PI / 3.2 + t * (-Math.PI / 1.5);
+        requestAnimationFrame(animateEnvOpen);
+      }
+      requestAnimationFrame(animateEnvOpen);
     }
 
     // ===========================
@@ -1134,14 +875,11 @@
       particles.rotation.y += delta * 0.012;
       particles.rotation.x = Math.sin(timeline * 0.25) * 0.12;
 
-      // Cupid wing flap
-      if (cupidGroup.visible) {
-        const wingFlap = Math.sin(timeline * 10) * 0.4;
-        cupidGroup.children.forEach(child => {
-          if (child.material?.color?.getHex() === 0xffffff && child.material.transparent) {
-            child.rotation.x = wingFlap;
-          }
-        });
+      // Envelope floating
+      if (envelopeGroup.visible) {
+        envelopeGroup.position.y += Math.sin(timeline * 2) * 0.002;
+        envelopeGroup.rotation.y = Math.sin(timeline * 0.8) * 0.1;
+        seal.rotation.z += delta * 0.5;
       }
 
       // Camera gentle sway
