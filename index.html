@@ -504,11 +504,11 @@
       // Runtime config
       // ==============================
       const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
-      const HEART_COUNT = IS_MOBILE ? 82 : 126;
-      const HEART_RADIUS = IS_MOBILE ? 7.4 : 8.8;
+      const HEART_COUNT = IS_MOBILE ? 120 : 170;
+      const HEART_RADIUS = IS_MOBILE ? 8.6 : 10.2;
 
       const HEART_COLORS = [
-        0xff5c8f, 0xff4d7f, 0xff6b94, 0xff3f74, 0xff7ea7, 0xff5a86, 0xff86ad,
+        0xff4d7f, 0xff5c8f, 0xff6b94, 0xff7ea7, 0xff2f66, 0xff86ad,
       ];
 
       // ==============================
@@ -531,7 +531,7 @@
       app.appendChild(renderer.domElement);
 
       const scene = new THREE.Scene();
-      scene.fog = new THREE.FogExp2(0x120109, IS_MOBILE ? 0.028 : 0.024);
+      scene.fog = new THREE.FogExp2(0x120109, IS_MOBILE ? 0.02 : 0.018);
 
       const camera = new THREE.PerspectiveCamera(
         48,
@@ -539,23 +539,23 @@
         0.1,
         180,
       );
-      const cameraBaseRadius = IS_MOBILE ? 18.4 : 21;
-      camera.position.set(0, 1.8, cameraBaseRadius);
+      const cameraBaseRadius = IS_MOBILE ? 16.5 : 18.5;
+      camera.position.set(0, 1.7, cameraBaseRadius);
 
       // Cinematic lighting
       const ambient = new THREE.AmbientLight(0xffd6e8, 0.54);
       scene.add(ambient);
 
-      const keyLight = new THREE.PointLight(0xff5a92, 22, 70, 2);
+      const keyLight = new THREE.PointLight(0xff5a92, 26, 70, 2);
       keyLight.position.set(8.5, 8.6, 13);
       scene.add(keyLight);
 
-      const fillLight = new THREE.PointLight(0xff2d66, 14, 70, 2);
+      const fillLight = new THREE.PointLight(0xff2d66, 18, 70, 2);
       fillLight.position.set(-10, -2.5, -7);
       scene.add(fillLight);
 
-      const topRim = new THREE.PointLight(0xffc4dc, 9, 75, 2);
-      topRim.position.set(0, 15, 0);
+      const topRim = new THREE.PointLight(0xffc4dc, 12, 75, 2);
+      topRim.position.set(0, 17, 0);
       scene.add(topRim);
 
       // ==============================
@@ -564,24 +564,30 @@
       const composer = new EffectComposer(renderer);
       composer.addPass(new RenderPass(scene, camera));
 
-      const baseAperture = IS_MOBILE ? 0.00011 : 0.00014;
-      const bokehPass = new BokehPass(scene, camera, {
-        focus: 12,
-        aperture: baseAperture,
-        maxblur: IS_MOBILE ? 0.002 : 0.0028,
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-      composer.addPass(bokehPass);
+      const baseAperture = IS_MOBILE ? 0.00012 : 0.00016;
+      let bokehPass = null;
+      try {
+        bokehPass = new BokehPass(scene, camera, {
+          focus: 12,
+          aperture: baseAperture,
+          maxblur: IS_MOBILE ? 0.0022 : 0.003,
+          width: window.innerWidth,
+          height: window.innerHeight,
+        });
+        composer.addPass(bokehPass);
+      } catch (err) {
+        console.error("BokehPass init failed, continuing without DOF", err);
+        bokehPass = null;
+      }
 
       const bloomPass = new UnrealBloomPass(
         new THREE.Vector2(window.innerWidth, window.innerHeight),
-        IS_MOBILE ? 0.95 : 1.2,
-        0.8,
-        0.15,
+        IS_MOBILE ? 1.2 : 1.55,
+        0.85,
+        0.1,
       );
-      bloomPass.threshold = 0.05;
-      bloomPass.radius = 0.76;
+      bloomPass.threshold = 0.04;
+      bloomPass.radius = 0.9;
       composer.addPass(bloomPass);
 
       // ==============================
@@ -615,8 +621,8 @@
         const baseColor = new THREE.Color(colorHex);
         return new THREE.MeshPhysicalMaterial({
           color: baseColor,
-          emissive: baseColor.clone().multiplyScalar(0.45),
-          emissiveIntensity: 0.95,
+          emissive: baseColor.clone().multiplyScalar(0.65),
+          emissiveIntensity: 1.15,
           roughness: 0.24,
           metalness: 0.1,
           clearcoat: 1,
@@ -657,8 +663,8 @@
           );
 
           const scale = THREE.MathUtils.randFloat(
-            IS_MOBILE ? 0.33 : 0.35,
-            IS_MOBILE ? 0.58 : 0.64,
+            IS_MOBILE ? 0.42 : 0.48,
+            IS_MOBILE ? 0.72 : 0.82,
           );
           mesh.scale.setScalar(scale);
           mesh.position.copy(direction).multiplyScalar(shellRadius);
@@ -1075,22 +1081,24 @@
           0.06,
         );
 
-        const desiredFocus = camera.position.distanceTo(currentLook);
-        const bokehUniforms = bokehPass.materialBokeh.uniforms;
-        bokehUniforms.focus.value = THREE.MathUtils.lerp(
-          bokehUniforms.focus.value,
-          desiredFocus,
-          0.08,
-        );
+        if (bokehPass) {
+          const desiredFocus = camera.position.distanceTo(currentLook);
+          const bokehUniforms = bokehPass.materialBokeh.uniforms;
+          bokehUniforms.focus.value = THREE.MathUtils.lerp(
+            bokehUniforms.focus.value,
+            desiredFocus,
+            0.08,
+          );
 
-        const apertureTarget = selectedHeart
-          ? baseAperture * 1.6
-          : baseAperture;
-        bokehUniforms.aperture.value = THREE.MathUtils.lerp(
-          bokehUniforms.aperture.value,
-          apertureTarget,
-          0.06,
-        );
+          const apertureTarget = selectedHeart
+            ? baseAperture * 1.6
+            : baseAperture;
+          bokehUniforms.aperture.value = THREE.MathUtils.lerp(
+            bokehUniforms.aperture.value,
+            apertureTarget,
+            0.06,
+          );
+        }
 
         composer.render();
       }
