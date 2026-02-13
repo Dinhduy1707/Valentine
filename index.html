@@ -1,1110 +1,1021 @@
 ﻿<!doctype html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Valentine 3D Deargift Style</title>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Great+Vibes&family=Quicksand:wght@400;600;700&display=swap");
 
-      :root {
-        --bg-1: #050204;
-        --bg-2: #170008;
-        --bg-3: #390013;
-        --pink: #ff4d86;
-        --pink-soft: #ffb7d0;
-        --letter-bg: #fff8fc;
-        --letter-ink: #7d1e46;
-        --envelope-a: #ffe5ef;
-        --envelope-b: #f6bdd0;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Valentine's Heart ❤️</title>
+  <meta name="description"
+    content="A cinematic Valentine's Day experience - A glowing ruby heart in a romantic atmosphere" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-      * {
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
-      }
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      font-family: 'Great Vibes', cursive;
+      touch-action: manipulation;
+    }
 
-      html,
-      body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        overflow: hidden;
-        font-family: "Quicksand", sans-serif;
-        color: #fff6fb;
-        background:
-          radial-gradient(
-            circle at 18% 22%,
-            rgba(142, 0, 43, 0.42),
-            transparent 42%
-          ),
-          radial-gradient(
-            circle at 82% 70%,
-            rgba(120, 0, 49, 0.3),
-            transparent 45%
-          ),
-          linear-gradient(145deg, var(--bg-2) 0%, var(--bg-1) 56%, #000 100%);
-      }
+    #canvas-container {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+    }
 
-      #app {
-        position: fixed;
-        inset: 0;
-        z-index: 1;
-      }
+    canvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+    }
 
-      .cinematic-glow,
-      .vignette {
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-      }
+    /* Bokeh overlay */
+    .bokeh-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      overflow: hidden;
+    }
 
-      .cinematic-glow {
-        z-index: 3;
-        background:
-          radial-gradient(
-            circle at 50% 62%,
-            rgba(255, 73, 133, 0.18),
-            transparent 55%
-          ),
-          radial-gradient(
-            circle at 50% 40%,
-            rgba(255, 187, 216, 0.1),
-            transparent 62%
-          );
-        mix-blend-mode: screen;
-      }
+    .bokeh-dot {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 180, 200, 0.7) 0%, rgba(255, 100, 150, 0.0) 70%);
+      filter: blur(1px);
+      animation: bokeh-float linear infinite;
+      will-change: transform, opacity;
+    }
 
-      .vignette {
-        z-index: 4;
-        background: radial-gradient(
-          circle at center,
-          transparent 54%,
-          rgba(0, 0, 0, 0.68) 100%
-        );
-      }
-
-      .hud {
-        position: fixed;
-        top: 14px;
-        left: 14px;
-        right: 14px;
-        z-index: 10;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 10px;
-        pointer-events: none;
-      }
-
-      .hint-top {
-        margin: 0;
-        padding: 7px 12px;
-        border-radius: 999px;
-        background: rgba(22, 0, 10, 0.52);
-        border: 1px solid rgba(255, 180, 209, 0.34);
-        font-size: 0.78rem;
-        letter-spacing: 0.2px;
-        text-shadow: 0 0 8px rgba(255, 105, 156, 0.72);
-        backdrop-filter: blur(8px);
-        pointer-events: auto;
-        transition: opacity 420ms ease;
-      }
-
-      .hint-top.hide {
+    @keyframes bokeh-float {
+      0% {
+        transform: translateY(110vh) scale(0.3);
         opacity: 0;
       }
 
-      .music-btn {
-        border: 1px solid rgba(255, 193, 217, 0.42);
-        background: linear-gradient(
-          160deg,
-          rgba(255, 83, 142, 0.36),
-          rgba(76, 0, 26, 0.44)
-        );
-        color: #fff5f9;
-        border-radius: 999px;
-        padding: 8px 12px;
-        font-size: 0.76rem;
-        cursor: pointer;
-        box-shadow: 0 0 16px rgba(255, 92, 151, 0.24);
-        backdrop-filter: blur(8px);
-        pointer-events: auto;
-      }
-
-      .music-btn:hover {
-        box-shadow: 0 0 18px rgba(255, 92, 151, 0.45);
-      }
-
-      .envelope-stage {
-        position: fixed;
-        inset: 0;
-        z-index: 11;
-        display: grid;
-        place-items: center;
-        opacity: 0;
-        transform: scale(0.9);
-        transition:
-          opacity 560ms ease,
-          transform 760ms cubic-bezier(0.2, 0.8, 0.2, 1);
-        pointer-events: none;
-      }
-
-      .envelope-stage.visible {
+      10% {
         opacity: 1;
-        transform: scale(1);
-        pointer-events: auto;
       }
 
-      .envelope-shell {
-        position: relative;
-        width: min(90vw, 450px);
-        perspective: 1300px;
-        filter: drop-shadow(0 20px 34px rgba(0, 0, 0, 0.52));
+      90% {
+        opacity: 0.8;
       }
 
-      .burst-light {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        width: 62%;
-        aspect-ratio: 1;
-        transform: translate(-50%, -50%) scale(0.35);
-        border-radius: 50%;
-        background: radial-gradient(
-          circle,
-          rgba(255, 210, 227, 0.95) 0%,
-          rgba(255, 210, 227, 0) 68%
-        );
+      100% {
+        transform: translateY(-10vh) scale(1);
         opacity: 0;
-        pointer-events: none;
-        transition:
-          transform 620ms ease,
-          opacity 460ms ease;
+      }
+    }
+
+    /* Vignette */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.7) 100%);
+    }
+
+    /* Click hint */
+    .click-hint {
+      position: fixed;
+      bottom: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      color: rgba(255, 200, 220, 0.8);
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(1.1rem, 3.5vw, 1.6rem);
+      letter-spacing: 1px;
+      text-shadow: 0 0 20px rgba(255, 80, 120, 0.6);
+      animation: hint-pulse 2.5s ease-in-out infinite;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    @keyframes hint-pulse {
+
+      0%,
+      100% {
+        opacity: 0.6;
+        transform: translateX(-50%) scale(1);
       }
 
-      .burst-light.active {
+      50% {
         opacity: 1;
-        transform: translate(-50%, -50%) scale(1.2);
+        transform: translateX(-50%) scale(1.05);
       }
+    }
 
-      .envelope-3d {
-        position: relative;
-        width: 100%;
-        height: clamp(230px, 36vw, 292px);
-        transform-style: preserve-3d;
-        cursor: pointer;
+    .click-hint.hidden {
+      opacity: 0 !important;
+      transition: opacity 0.8s ease;
+    }
+
+    /* Explosion petals */
+    .petal {
+      position: fixed;
+      z-index: 15;
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+
+    .petal-shape {
+      width: 100%;
+      height: 100%;
+      border-radius: 60% 0 60% 0;
+      animation: petal-spin linear infinite;
+    }
+
+    @keyframes petal-spin {
+      to {
+        transform: rotate(360deg);
       }
+    }
 
-      .env-back,
-      .env-front,
-      .env-flap {
-        position: absolute;
-        inset: 0;
-        border-radius: 12px;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.38);
-      }
+    /* Spark particles */
+    .spark {
+      position: fixed;
+      z-index: 15;
+      pointer-events: none;
+      border-radius: 50%;
+      will-change: transform, opacity;
+    }
 
-      .env-back {
-        background: linear-gradient(150deg, #ffeef5, #f7c6d8 72%);
-        transform: translateZ(-2px);
-      }
+    /* Magic text after explosion */
+    .magic-text {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 20;
+      color: #fff;
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(2rem, 8vw, 4rem);
+      text-shadow: 0 0 40px rgba(255, 60, 100, 0.9), 0 0 80px rgba(255, 40, 80, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      text-align: center;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
 
-      .env-front {
-        background: linear-gradient(
-          160deg,
-          var(--envelope-a),
-          var(--envelope-b)
-        );
-        clip-path: polygon(0 0, 50% 52%, 100% 0, 100% 100%, 0 100%);
-        z-index: 4;
-      }
+    .magic-text.show {
+      animation: text-appear 3s ease forwards;
+    }
 
-      .env-flap {
-        height: 60%;
-        clip-path: polygon(0 0, 100% 0, 50% 100%);
-        border-bottom: none;
-        transform-origin: top;
-        background: linear-gradient(170deg, #fff5f9, #f6bfd3);
-        box-shadow: inset 0 -7px 16px rgba(167, 50, 93, 0.24);
-        transition: transform 1050ms cubic-bezier(0.2, 0.8, 0.2, 1);
-        z-index: 7;
-      }
-
-      .seal {
-        position: absolute;
-        left: 50%;
-        top: 53%;
-        width: 54px;
-        height: 54px;
-        transform: translate(-50%, -50%);
-        border-radius: 50%;
-        display: grid;
-        place-items: center;
-        color: #fff;
-        font-size: 20px;
-        background: radial-gradient(
-          circle at 30% 22%,
-          #ff7ba3,
-          #cb1e58 65%,
-          #8f0032 100%
-        );
-        box-shadow:
-          0 0 16px rgba(255, 80, 136, 0.52),
-          inset 0 -4px 9px rgba(89, 0, 30, 0.54);
-        z-index: 8;
-        transition: opacity 340ms ease;
-      }
-
-      .letter {
-        position: absolute;
-        left: 50%;
-        bottom: 18px;
-        width: 90%;
-        min-height: 72%;
-        transform: translateX(-50%) translateY(82%) scale(0.92);
-        border-radius: 14px;
-        background: linear-gradient(175deg, var(--letter-bg), #ffeef5 82%);
-        box-shadow: 0 12px 28px rgba(130, 12, 52, 0.22);
-        z-index: 5;
-        overflow: hidden;
-        transition: transform 1200ms cubic-bezier(0.2, 0.8, 0.2, 1);
-        padding: clamp(16px, 3.8vw, 24px);
-      }
-
-      .letter::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background: repeating-linear-gradient(
-          180deg,
-          rgba(255, 203, 224, 0.12) 0,
-          rgba(255, 203, 224, 0.12) 2px,
-          transparent 2px,
-          transparent 30px
-        );
-      }
-
-      .letter-content {
-        position: relative;
-        text-align: center;
+    @keyframes text-appear {
+      0% {
         opacity: 0;
-        transform: translateY(14px);
-        transition:
-          opacity 820ms ease 260ms,
-          transform 860ms ease 260ms;
+        transform: translate(-50%, -50%) scale(0.5);
+        filter: blur(10px);
       }
 
-      .letter-content h1 {
-        margin: 0 0 10px;
-        color: #d91e5a;
-        font-family: "Great Vibes", cursive;
-        font-size: clamp(2rem, 7vw, 2.9rem);
-        font-weight: 400;
-        letter-spacing: 0.2px;
-        text-shadow: 0 0 14px rgba(255, 74, 132, 0.58);
-      }
-
-      .letter-content p {
-        margin: 0;
-        color: var(--letter-ink);
-        white-space: pre-line;
-        line-height: 1.56;
-        font-family: "Caveat", cursive;
-        font-size: clamp(1.34rem, 4.8vw, 1.95rem);
-        text-shadow: 0 0 10px rgba(255, 182, 207, 0.44);
-      }
-
-      .envelope-3d.open .env-flap {
-        transform: rotateX(-172deg);
-      }
-
-      .envelope-3d.open .seal {
-        opacity: 0;
-      }
-
-      .envelope-3d.open .letter {
-        transform: translateX(-50%) translateY(-26%) scale(1);
-      }
-
-      .envelope-3d.open .letter-content {
+      30% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translate(-50%, -50%) scale(1.1);
+        filter: blur(0);
       }
 
-      .envelope-hint {
-        margin: 14px 0 0;
-        text-align: center;
-        font-size: 0.84rem;
-        letter-spacing: 0.3px;
-        color: #ffd6e6;
-        text-shadow: 0 0 8px rgba(255, 96, 148, 0.44);
+      50% {
+        transform: translate(-50%, -50%) scale(1);
       }
 
-      .mini-heart {
-        position: fixed;
-        width: 12px;
-        height: 12px;
-        border-radius: 2px;
-        transform: rotate(45deg);
-        background: #ff5f94;
-        box-shadow: 0 0 12px rgba(255, 105, 160, 0.92);
-        pointer-events: none;
-        opacity: 0;
-        z-index: 13;
-        animation: mini-heart-fly 1900ms ease-out forwards;
+      100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    /* Slow-mo flash */
+    .flash-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 14;
+      background: radial-gradient(circle at center, rgba(255, 200, 220, 0.6) 0%, transparent 70%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .flash-overlay.active {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="canvas-container"></div>
+  <div class="bokeh-layer" id="bokehLayer"></div>
+  <div class="vignette"></div>
+  <div class="flash-overlay" id="flashOverlay"></div>
+  <div class="click-hint" id="clickHint">Touch the heart ❤️</div>
+  <div class="magic-text" id="magicText">Happy Valentine's Day ❤️</div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.161.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.161.0/examples/jsm/"
+      }
+    }
+    </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+    // ===========================
+    // Constants & Config
+    // ===========================
+    const IS_MOBILE = window.innerWidth < 768;
+    const container = document.getElementById('canvas-container');
+    const clickHint = document.getElementById('clickHint');
+    const magicText = document.getElementById('magicText');
+    const flashOverlay = document.getElementById('flashOverlay');
+    const bokehLayer = document.getElementById('bokehLayer');
+
+    let heartExploded = false;
+    let heartClicked = false;
+    let glowIntensity = 0;
+    let timeScale = 1;
+    let timeScaleTarget = 1;
+
+    // ===========================
+    // Renderer
+    // ===========================
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: false,
+      powerPreference: 'high-performance',
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, IS_MOBILE ? 2 : 2.5));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000, 1);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.1;
+    container.appendChild(renderer.domElement);
+
+    // ===========================
+    // Scene
+    // ===========================
+    const scene = new THREE.Scene();
+
+    // Dark romantic gradient background
+    const bgCanvas = document.createElement('canvas');
+    bgCanvas.width = 2;
+    bgCanvas.height = 512;
+    const bgCtx = bgCanvas.getContext('2d');
+    const bgGrad = bgCtx.createLinearGradient(0, 0, 0, 512);
+    bgGrad.addColorStop(0, '#0a0002');
+    bgGrad.addColorStop(0.4, '#12000a');
+    bgGrad.addColorStop(0.7, '#200010');
+    bgGrad.addColorStop(1, '#0a0004');
+    bgCtx.fillStyle = bgGrad;
+    bgCtx.fillRect(0, 0, 2, 512);
+    const bgTexture = new THREE.CanvasTexture(bgCanvas);
+    scene.background = bgTexture;
+
+    // ===========================
+    // Camera
+    // ===========================
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 0, 6);
+
+    let cameraZoomBase = 6;
+    let cameraZoomTarget = 6;
+
+    // ===========================
+    // Lighting - Cinematic 3-point setup
+    // ===========================
+    // Ambient
+    const ambient = new THREE.AmbientLight(0x330011, 0.3);
+    scene.add(ambient);
+
+    // Key light - warm ruby
+    const keyLight = new THREE.PointLight(0xff3355, 15, 30, 2);
+    keyLight.position.set(3, 4, 5);
+    scene.add(keyLight);
+
+    // Fill light - soft pink
+    const fillLight = new THREE.PointLight(0xff6688, 8, 25, 2);
+    fillLight.position.set(-4, -1, 3);
+    scene.add(fillLight);
+
+    // Rim / Back light - deep red
+    const rimLight = new THREE.PointLight(0xcc0033, 12, 20, 2);
+    rimLight.position.set(0, -3, -4);
+    scene.add(rimLight);
+
+    // Top highlight
+    const topLight = new THREE.PointLight(0xff99aa, 6, 20, 2);
+    topLight.position.set(0, 5, 2);
+    scene.add(topLight);
+
+    // Inner glow point light (at heart center)
+    const innerGlow = new THREE.PointLight(0xff2244, 5, 8, 2);
+    innerGlow.position.set(0, 0.15, 0);
+    scene.add(innerGlow);
+
+    // ===========================
+    // Post Processing
+    // ===========================
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      1.2,   // strength
+      0.6,   // radius
+      0.15   // threshold
+    );
+    composer.addPass(bloomPass);
+
+    // ===========================
+    // Heart Geometry (smooth 3D heart)
+    // ===========================
+    function createHeart3DGeometry(detail = 80) {
+      const vertices = [];
+      const normals = [];
+      const uvs = [];
+      const indices = [];
+
+      // Parametric heart surface
+      for (let i = 0; i <= detail; i++) {
+        const u = (i / detail) * Math.PI * 2;
+        for (let j = 0; j <= detail; j++) {
+          const v = (j / detail) * Math.PI;
+
+          // Heart parametric equations
+          const sinU = Math.sin(u);
+          const cosU = Math.cos(u);
+          const sinV = Math.sin(v);
+          const cosV = Math.cos(v);
+
+          const x = sinV * (15 * sinU - 4 * Math.sin(3 * u));
+          const y = 8 * cosV;
+          const z = sinV * (15 * cosU - 5 * Math.cos(2 * u) - 2 * Math.cos(3 * u) - Math.cos(4 * u));
+
+          const scale = 0.04;
+          vertices.push(x * scale, y * scale, z * scale);
+          uvs.push(i / detail, j / detail);
+
+          // Approximate normals
+          const nx = x;
+          const ny = y;
+          const nz = z;
+          const len = Math.sqrt(nx * nx + ny * ny + nz * nz) || 1;
+          normals.push(nx / len, ny / len, nz / len);
+        }
       }
 
-      .mini-heart::before,
-      .mini-heart::after {
-        content: "";
-        position: absolute;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: inherit;
-      }
-
-      .mini-heart::before {
-        left: 0;
-        top: -6px;
-      }
-
-      .mini-heart::after {
-        left: -6px;
-        top: 0;
-      }
-
-      @keyframes mini-heart-fly {
-        0% {
-          opacity: 0;
-          transform: translate3d(0, 0, 0) rotate(45deg) scale(0.25);
-        }
-        14% {
-          opacity: 1;
-        }
-        100% {
-          opacity: 0;
-          transform: translate3d(var(--tx), var(--ty), 0) rotate(45deg)
-            scale(1.16);
+      for (let i = 0; i < detail; i++) {
+        for (let j = 0; j < detail; j++) {
+          const a = i * (detail + 1) + j;
+          const b = a + detail + 1;
+          indices.push(a, b, a + 1);
+          indices.push(b, b + 1, a + 1);
         }
       }
 
-      @media (max-width: 768px) {
-        .hud {
-          top: 10px;
-          left: 10px;
-          right: 10px;
-        }
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+      geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+      geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+      geometry.setIndex(indices);
+      geometry.computeVertexNormals();
+      return geometry;
+    }
 
-        .hint-top {
-          font-size: 0.72rem;
-          padding: 6px 10px;
-        }
+    // ===========================
+    // Heart Material - Glossy Ruby Glass
+    // ===========================
+    const heartGeometry = createHeart3DGeometry(IS_MOBILE ? 60 : 80);
 
-        .music-btn {
-          font-size: 0.72rem;
-          padding: 7px 10px;
-        }
+    const heartMaterial = new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color(0x8b0020),           // Deep ruby red
+      emissive: new THREE.Color(0xff1133),
+      emissiveIntensity: 0.4,
+      roughness: 0.12,
+      metalness: 0.05,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.05,
+      transparent: true,
+      opacity: 0.88,
+      transmission: 0.15,                          // Semi-transparent glass
+      thickness: 1.5,
+      ior: 1.8,                                    // Glass-like refraction
+      reflectivity: 0.9,
+      sheen: 1.0,
+      sheenColor: new THREE.Color(0xff6688),
+      sheenRoughness: 0.3,
+      envMapIntensity: 1.2,
+      side: THREE.DoubleSide,
+    });
 
-        .envelope-shell {
-          width: 92vw;
-        }
+    const heartMesh = new THREE.Mesh(heartGeometry, heartMaterial);
+    heartMesh.rotation.x = Math.PI;   // Flip upright
+    heartMesh.rotation.z = Math.PI;
+    heartMesh.scale.setScalar(1);
+    scene.add(heartMesh);
+
+    // ===========================
+    // Aura Glow Sphere around Heart
+    // ===========================
+    const auraMaterial = new THREE.MeshBasicMaterial({
+      color: 0xff2244,
+      transparent: true,
+      opacity: 0.06,
+      side: THREE.BackSide,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+    const auraGeometry = new THREE.SphereGeometry(2.2, 32, 32);
+    const auraMesh = new THREE.Mesh(auraGeometry, auraMaterial);
+    scene.add(auraMesh);
+
+    // Second aura (outer, softer)
+    const aura2Material = new THREE.MeshBasicMaterial({
+      color: 0xff4466,
+      transparent: true,
+      opacity: 0.03,
+      side: THREE.BackSide,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+    const aura2Geometry = new THREE.SphereGeometry(3.2, 32, 32);
+    const aura2Mesh = new THREE.Mesh(aura2Geometry, aura2Material);
+    scene.add(aura2Mesh);
+
+    // ===========================
+    // Orbiting Sparkle Particles
+    // ===========================
+    const SPARK_COUNT = IS_MOBILE ? 80 : 150;
+    const sparkGeometry = new THREE.BufferGeometry();
+    const sparkPositions = new Float32Array(SPARK_COUNT * 3);
+    const sparkColors = new Float32Array(SPARK_COUNT * 3);
+    const sparkSizes = new Float32Array(SPARK_COUNT);
+
+    const sparkData = [];
+    for (let i = 0; i < SPARK_COUNT; i++) {
+      const orbitRadius = 1.8 + Math.random() * 2.5;
+      const orbitSpeed = 0.2 + Math.random() * 0.6;
+      const orbitPhase = Math.random() * Math.PI * 2;
+      const orbitTilt = (Math.random() - 0.5) * Math.PI * 0.8;
+      const yOffset = (Math.random() - 0.5) * 2.5;
+      const verticalSpeed = 0.1 + Math.random() * 0.4;
+
+      sparkData.push({ orbitRadius, orbitSpeed, orbitPhase, orbitTilt, yOffset, verticalSpeed });
+
+      // Colors: mix of red, pink, white
+      const colorChoice = Math.random();
+      if (colorChoice < 0.4) {
+        sparkColors[i * 3] = 1.0; sparkColors[i * 3 + 1] = 0.3; sparkColors[i * 3 + 2] = 0.4;
+      } else if (colorChoice < 0.7) {
+        sparkColors[i * 3] = 1.0; sparkColors[i * 3 + 1] = 0.55; sparkColors[i * 3 + 2] = 0.65;
+      } else {
+        sparkColors[i * 3] = 1.0; sparkColors[i * 3 + 1] = 0.85; sparkColors[i * 3 + 2] = 0.9;
       }
 
-      @media (max-width: 420px) {
-        .envelope-3d {
-          height: 248px;
-        }
+      sparkSizes[i] = (0.03 + Math.random() * 0.06) * (IS_MOBILE ? 0.8 : 1);
+    }
 
-        .seal {
-          width: 46px;
-          height: 46px;
-          font-size: 16px;
-        }
+    sparkGeometry.setAttribute('position', new THREE.BufferAttribute(sparkPositions, 3));
+    sparkGeometry.setAttribute('color', new THREE.BufferAttribute(sparkColors, 3));
+    sparkGeometry.setAttribute('size', new THREE.BufferAttribute(sparkSizes, 1));
+
+    const sparkMaterial = new THREE.PointsMaterial({
+      size: 0.07,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      sizeAttenuation: true,
+    });
+
+    const sparkPoints = new THREE.Points(sparkGeometry, sparkMaterial);
+    scene.add(sparkPoints);
+
+    // ===========================
+    // Background Star Field
+    // ===========================
+    function createStarField(count, minR, maxR, size, color, opacity) {
+      const geo = new THREE.BufferGeometry();
+      const pos = new Float32Array(count * 3);
+      for (let i = 0; i < count; i++) {
+        const r = minR + Math.random() * (maxR - minR);
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+        pos[i * 3 + 1] = r * Math.cos(phi);
+        pos[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
       }
-    </style>
-  </head>
-  <body>
-    <div id="app"></div>
-    <div class="cinematic-glow" aria-hidden="true"></div>
-    <div class="vignette" aria-hidden="true"></div>
-
-    <header class="hud">
-      <p class="hint-top" id="sceneHint">
-        Chạm vào một trái tim để mở điều bất ngờ
-      </p>
-      <button
-        class="music-btn"
-        id="musicBtn"
-        type="button"
-        aria-pressed="false"
-      >
-        ♪ Bật nhạc
-      </button>
-    </header>
-
-    <section class="envelope-stage" id="envelopeStage" aria-live="polite">
-      <div class="envelope-shell">
-        <div class="burst-light" id="burstLight"></div>
-        <div
-          class="envelope-3d"
-          id="envelope3d"
-          role="button"
-          tabindex="0"
-          aria-label="Mở phong bì tình yêu"
-        >
-          <div class="env-back"></div>
-          <div class="env-front"></div>
-          <div class="env-flap"></div>
-          <div class="seal">❤</div>
-
-          <article class="letter">
-            <div class="letter-content">
-              <h1>Happy Valentine's Day ❤️</h1>
-              <p>
-                Chúc mừng em Valentine thật xinh đẹp, Luôn rạng rỡ như những đóa
-                hoa mùa xuân, Anh luôn ở đây vì em ❤️
-              </p>
-            </div>
-          </article>
-        </div>
-        <p class="envelope-hint" id="envelopeHint">
-          Chạm vào phong bì để mở thư
-        </p>
-      </div>
-    </section>
-
-    <audio id="bgm" loop preload="auto">
-      <source src="music.mp3" type="audio/mpeg" />
-    </audio>
-
-    <script type="module">
-      import * as THREE from "https://unpkg.com/three@0.161.0/build/three.module.js";
-      import { EffectComposer } from "https://unpkg.com/three@0.161.0/examples/jsm/postprocessing/EffectComposer.js";
-      import { RenderPass } from "https://unpkg.com/three@0.161.0/examples/jsm/postprocessing/RenderPass.js";
-      import { UnrealBloomPass } from "https://unpkg.com/three@0.161.0/examples/jsm/postprocessing/UnrealBloomPass.js";
-      import { BokehPass } from "https://unpkg.com/three@0.161.0/examples/jsm/postprocessing/BokehPass.js";
-
-      // ==============================
-      // DOM
-      // ==============================
-      const app = document.getElementById("app");
-      const sceneHint = document.getElementById("sceneHint");
-      const musicBtn = document.getElementById("musicBtn");
-      const envelopeStage = document.getElementById("envelopeStage");
-      const envelope3d = document.getElementById("envelope3d");
-      const burstLight = document.getElementById("burstLight");
-      const envelopeHint = document.getElementById("envelopeHint");
-      const bgm = document.getElementById("bgm");
-
-      // ==============================
-      // Runtime config
-      // ==============================
-      const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
-      const HEART_COUNT = IS_MOBILE ? 120 : 170;
-      const HEART_RADIUS = IS_MOBILE ? 8.6 : 10.2;
-
-      const HEART_COLORS = [
-        0xff4d7f, 0xff5c8f, 0xff6b94, 0xff7ea7, 0xff2f66, 0xff86ad,
-      ];
-
-      // ==============================
-      // Three.js scene setup
-      // ==============================
-      const renderer = new THREE.WebGLRenderer({
-        antialias: true,
-        alpha: true,
-        powerPreference: "high-performance",
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      const mat = new THREE.PointsMaterial({
+        color, size, transparent: true, opacity,
+        blending: THREE.AdditiveBlending, depthWrite: false,
       });
+      return new THREE.Points(geo, mat);
+    }
 
-      renderer.setPixelRatio(
-        Math.min(window.devicePixelRatio || 1, IS_MOBILE ? 1.6 : 2),
-      );
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setClearColor(0x000000, 0);
-      renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.05;
-      app.appendChild(renderer.domElement);
+    const starsNear = createStarField(IS_MOBILE ? 200 : 400, 8, 30, 0.06, 0xffccdd, 0.5);
+    const starsFar = createStarField(IS_MOBILE ? 150 : 300, 20, 50, 0.04, 0xff8899, 0.25);
+    scene.add(starsNear);
+    scene.add(starsFar);
 
-      const scene = new THREE.Scene();
-      scene.fog = new THREE.FogExp2(0x120109, IS_MOBILE ? 0.02 : 0.018);
-
-      const camera = new THREE.PerspectiveCamera(
-        48,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        180,
-      );
-      const cameraBaseRadius = IS_MOBILE ? 16.5 : 18.5;
-      camera.position.set(0, 1.7, cameraBaseRadius);
-
-      // Cinematic lighting
-      const ambient = new THREE.AmbientLight(0xffd6e8, 0.54);
-      scene.add(ambient);
-
-      const keyLight = new THREE.PointLight(0xff5a92, 26, 70, 2);
-      keyLight.position.set(8.5, 8.6, 13);
-      scene.add(keyLight);
-
-      const fillLight = new THREE.PointLight(0xff2d66, 18, 70, 2);
-      fillLight.position.set(-10, -2.5, -7);
-      scene.add(fillLight);
-
-      const topRim = new THREE.PointLight(0xffc4dc, 12, 75, 2);
-      topRim.position.set(0, 17, 0);
-      scene.add(topRim);
-
-      // ==============================
-      // Post processing (Bloom + light DOF)
-      // ==============================
-      const composer = new EffectComposer(renderer);
-      composer.addPass(new RenderPass(scene, camera));
-
-      const baseAperture = IS_MOBILE ? 0.00012 : 0.00016;
-      let bokehPass = null;
-      try {
-        bokehPass = new BokehPass(scene, camera, {
-          focus: 12,
-          aperture: baseAperture,
-          maxblur: IS_MOBILE ? 0.0022 : 0.003,
-          width: window.innerWidth,
-          height: window.innerHeight,
-        });
-        composer.addPass(bokehPass);
-      } catch (err) {
-        console.error("BokehPass init failed, continuing without DOF", err);
-        bokehPass = null;
+    // ===========================
+    // CSS Bokeh Lights
+    // ===========================
+    function createBokeh() {
+      const count = IS_MOBILE ? 15 : 25;
+      for (let i = 0; i < count; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'bokeh-dot';
+        const size = 10 + Math.random() * 50;
+        dot.style.width = size + 'px';
+        dot.style.height = size + 'px';
+        dot.style.left = Math.random() * 100 + '%';
+        dot.style.animationDuration = (12 + Math.random() * 20) + 's';
+        dot.style.animationDelay = (Math.random() * 15) + 's';
+        dot.style.opacity = 0.15 + Math.random() * 0.4;
+        bokehLayer.appendChild(dot);
       }
+    }
+    createBokeh();
 
-      const bloomPass = new UnrealBloomPass(
-        new THREE.Vector2(window.innerWidth, window.innerHeight),
-        IS_MOBILE ? 1.2 : 1.55,
-        0.85,
-        0.1,
-      );
-      bloomPass.threshold = 0.04;
-      bloomPass.radius = 0.9;
-      composer.addPass(bloomPass);
+    // ===========================
+    // Raycaster for Click
+    // ===========================
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
 
-      // ==============================
-      // Heart geometry (custom)
-      // ==============================
-      function createHeartGeometry() {
-        const shape = new THREE.Shape();
-        shape.moveTo(0, 0.3);
-        shape.bezierCurveTo(0, 0.02, -0.55, 0.02, -0.55, 0.48);
-        shape.bezierCurveTo(-0.55, 0.83, -0.2, 1.08, 0, 1.24);
-        shape.bezierCurveTo(0.2, 1.08, 0.55, 0.83, 0.55, 0.48);
-        shape.bezierCurveTo(0.55, 0.02, 0, 0.02, 0, 0.3);
+    function onPointerDown(event) {
+      if (heartExploded) return;
 
-        const geometry = new THREE.ExtrudeGeometry(shape, {
-          depth: 0.34,
-          bevelEnabled: true,
-          bevelSegments: 3,
-          bevelSize: 0.08,
-          bevelThickness: 0.08,
-          steps: 1,
-          curveSegments: 26,
-        });
+      const x = event.clientX ?? event.touches?.[0]?.clientX;
+      const y = event.clientY ?? event.touches?.[0]?.clientY;
+      if (x === undefined || y === undefined) return;
 
-        geometry.center();
-        geometry.rotateX(Math.PI);
-        geometry.computeVertexNormals();
-        return geometry;
-      }
+      pointer.x = (x / window.innerWidth) * 2 - 1;
+      pointer.y = -(y / window.innerHeight) * 2 + 1;
 
-      function createHeartMaterial(colorHex) {
-        const baseColor = new THREE.Color(colorHex);
-        return new THREE.MeshPhysicalMaterial({
-          color: baseColor,
-          emissive: baseColor.clone().multiplyScalar(0.65),
-          emissiveIntensity: 1.15,
-          roughness: 0.24,
-          metalness: 0.1,
-          clearcoat: 1,
-          clearcoatRoughness: 0.16,
-          transparent: true,
-          opacity: 1,
-        });
-      }
+      raycaster.setFromCamera(pointer, camera);
+      const hits = raycaster.intersectObject(heartMesh);
 
-      const heartGeometry = createHeartGeometry();
-      const heartSphere = new THREE.Group();
-      scene.add(heartSphere);
-
-      const hearts = [];
-      const heartMeshes = [];
-      const golden = Math.PI * (3 - Math.sqrt(5));
-
-      function fibonacciPoint(index, total) {
-        const y = 1 - (index / (total - 1)) * 2;
-        const radius = Math.sqrt(Math.max(0, 1 - y * y));
-        const theta = golden * index;
-        const x = Math.cos(theta) * radius;
-        const z = Math.sin(theta) * radius;
-        return new THREE.Vector3(x, y, z);
-      }
-
-      function buildHeartSphere() {
-        for (let i = 0; i < HEART_COUNT; i += 1) {
-          const direction = fibonacciPoint(i, HEART_COUNT).normalize();
-          const shellRadius =
-            HEART_RADIUS * THREE.MathUtils.randFloat(0.88, 1.1);
-
-          const mesh = new THREE.Mesh(
-            heartGeometry,
-            createHeartMaterial(
-              HEART_COLORS[(Math.random() * HEART_COLORS.length) | 0],
-            ),
-          );
-
-          const scale = THREE.MathUtils.randFloat(
-            IS_MOBILE ? 0.42 : 0.48,
-            IS_MOBILE ? 0.72 : 0.82,
-          );
-          mesh.scale.setScalar(scale);
-          mesh.position.copy(direction).multiplyScalar(shellRadius);
-          mesh.lookAt(mesh.position.clone().multiplyScalar(2));
-          mesh.rotateY(THREE.MathUtils.randFloatSpread(0.9));
-
-          mesh.userData.isHeart = true;
-          heartSphere.add(mesh);
-
-          hearts.push({
-            mesh,
-            material: mesh.material,
-            direction,
-            radius: shellRadius,
-            baseScale: scale,
-            scaleNow: scale,
-            targetScale: scale,
-            opacityNow: 1,
-            targetOpacity: 1,
-            phase: Math.random() * Math.PI * 2,
-            floatSpeed: 0.8 + Math.random() * 1.8,
-            wobbleSpeed: 0.9 + Math.random() * 1.7,
-            spinSpeed: 0.4 + Math.random() * 0.85,
-            baseEmissive: 0.95,
-          });
-
-          heartMeshes.push(mesh);
+      if (hits.length > 0 || isHeartNear(x, y)) {
+        if (!heartClicked) {
+          heartClicked = true;
+          clickHint.classList.add('hidden');
+          triggerClickGlow();
+        } else {
+          triggerExplosion();
         }
       }
+    }
 
-      buildHeartSphere();
+    // Check if click is near heart center (fallback for mobile)
+    function isHeartNear(x, y) {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+      return dist < (IS_MOBILE ? 120 : 150);
+    }
 
-      // ==============================
-      // Star particles
-      // ==============================
-      function createStars(count, innerRadius, outerRadius, size, opacity) {
-        const geo = new THREE.BufferGeometry();
-        const positions = new Float32Array(count * 3);
+    renderer.domElement.addEventListener('pointerdown', onPointerDown, { passive: true });
+    renderer.domElement.addEventListener('touchstart', onPointerDown, { passive: true });
 
-        for (let i = 0; i < count; i += 1) {
-          const r = THREE.MathUtils.randFloat(innerRadius, outerRadius);
-          const theta = Math.random() * Math.PI * 2;
-          const phi = Math.acos(THREE.MathUtils.randFloatSpread(2));
+    // ===========================
+    // First Click - Glow Brighter
+    // ===========================
+    function triggerClickGlow() {
+      glowIntensity = 1;
+      // Show subtle crack line via emissive boost
+      heartMaterial.emissiveIntensity = 1.2;
+      bloomPass.strength = 2.0;
 
-          positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-          positions[i * 3 + 1] = r * Math.cos(phi);
-          positions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
-        }
+      // Small light flash
+      flashOverlay.classList.add('active');
+      setTimeout(() => flashOverlay.classList.remove('active'), 400);
 
-        geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+      // Update hint
+      clickHint.textContent = 'Touch again ❤️';
+      clickHint.classList.remove('hidden');
+      setTimeout(() => {
+        // Settle glow
+        heartMaterial.emissiveIntensity = 0.7;
+        bloomPass.strength = 1.5;
+      }, 1500);
+    }
 
-        const mat = new THREE.PointsMaterial({
-          color: 0xffcce0,
-          size,
-          transparent: true,
-          opacity,
-          blending: THREE.AdditiveBlending,
-          depthWrite: false,
-        });
+    // ===========================
+    // Second Click - Epic Explosion
+    // ===========================
+    function triggerExplosion() {
+      heartExploded = true;
+      clickHint.classList.add('hidden');
 
-        const points = new THREE.Points(geo, mat);
-        scene.add(points);
-        return points;
-      }
+      // Slow motion
+      timeScaleTarget = 0.2;
 
-      const starsNear = createStars(
-        IS_MOBILE ? 500 : 820,
-        13,
-        55,
-        IS_MOBILE ? 0.085 : 0.095,
-        0.62,
-      );
-      const starsFar = createStars(
-        IS_MOBILE ? 420 : 760,
-        24,
-        82,
-        IS_MOBILE ? 0.065 : 0.075,
-        0.34,
-      );
+      // Flash
+      flashOverlay.classList.add('active');
 
-      // ==============================
-      // Interaction + animation state
-      // ==============================
-      const raycaster = new THREE.Raycaster();
-      const pointerNDC = new THREE.Vector2();
+      // Dramatic bloom
+      bloomPass.strength = 3.5;
 
-      let selectedHeart = null;
-      let envelopeVisible = false;
-      let envelopeOpened = false;
+      // Super glow heart before explosion
+      heartMaterial.emissiveIntensity = 3;
+      innerGlow.intensity = 30;
 
-      let focusProgress = 0;
-      const focusFromCam = new THREE.Vector3();
-      const focusToCam = new THREE.Vector3();
-      const focusFromLook = new THREE.Vector3();
-      const focusToLook = new THREE.Vector3();
+      setTimeout(() => {
+        flashOverlay.classList.remove('active');
 
-      const cameraTarget = new THREE.Vector3();
-      const lookTarget = new THREE.Vector3(0, 0, 0);
-      const currentLook = new THREE.Vector3(0, 0, 0);
-      const tmpVec = new THREE.Vector3();
+        // Hide heart
+        heartMesh.visible = false;
+        auraMesh.visible = false;
+        aura2Mesh.visible = false;
+        sparkPoints.visible = false;
 
-      const pointerCurrent = new THREE.Vector2(0, 0);
-      const pointerTarget = new THREE.Vector2(0, 0);
+        // Spawn petals
+        spawnPetals();
+        spawnSparks();
+        spawnGlowFragments();
 
-      let timeline = 0;
-      let bloomTarget = bloomPass.strength;
-      let timeScale = 1;
-      let timeScaleTarget = 1;
-
-      // ==============================
-      // Audio controls
-      // ==============================
-      let audioActive = false;
-
-      async function tryStartMusic() {
-        if (audioActive) return;
-        try {
-          bgm.volume = 0.55;
-          await bgm.play();
-          audioActive = true;
-          musicBtn.setAttribute("aria-pressed", "true");
-          musicBtn.textContent = "♫ Tắt nhạc";
-        } catch (_error) {
-          audioActive = false;
-        }
-      }
-
-      function stopMusic() {
-        bgm.pause();
-        bgm.currentTime = 0;
-        audioActive = false;
-        musicBtn.setAttribute("aria-pressed", "false");
-        musicBtn.textContent = "♪ Bật nhạc";
-      }
-
-      musicBtn.addEventListener("click", async () => {
-        if (audioActive) stopMusic();
-        else await tryStartMusic();
-      });
-
-      // ==============================
-      // Envelope interactions
-      // ==============================
-      function spawnMiniHearts() {
-        const rect = envelope3d.getBoundingClientRect();
-        const amount = IS_MOBILE ? 12 : 18;
-
-        for (let i = 0; i < amount; i += 1) {
-          const mini = document.createElement("span");
-          mini.className = "mini-heart";
-
-          const startX = rect.left + rect.width * (0.42 + Math.random() * 0.16);
-          const startY = rect.top + rect.height * 0.27;
-          const tx = (Math.random() - 0.5) * (IS_MOBILE ? 150 : 190);
-          const ty = -(Math.random() * (IS_MOBILE ? 120 : 165) + 40);
-
-          mini.style.left = `${startX}px`;
-          mini.style.top = `${startY}px`;
-          mini.style.setProperty("--tx", `${tx}px`);
-          mini.style.setProperty("--ty", `${ty}px`);
-          mini.style.animationDelay = `${Math.random() * 0.15}s`;
-
-          document.body.appendChild(mini);
-          setTimeout(() => mini.remove(), 2100);
-        }
-      }
-
-      function triggerSlowMotion() {
-        timeScaleTarget = 0.42;
-        bloomTarget = IS_MOBILE ? 1.7 : 2.05;
-
-        burstLight.classList.add("active");
-        setTimeout(() => burstLight.classList.remove("active"), 720);
+        // Show text
+        setTimeout(() => {
+          magicText.classList.add('show');
+          timeScaleTarget = 0.6;
+        }, 800);
 
         setTimeout(() => {
           timeScaleTarget = 1;
-          bloomTarget = selectedHeart
-            ? IS_MOBILE
-              ? 1.28
-              : 1.5
-            : IS_MOBILE
-              ? 1
-              : 1.2;
-        }, 1200);
-      }
+          bloomPass.strength = 1.8;
+        }, 3000);
+      }, 600);
+    }
 
-      function openEnvelope() {
-        if (!envelopeVisible || envelopeOpened) return;
-        envelopeOpened = true;
+    // ===========================
+    // Petal Explosion
+    // ===========================
+    function spawnPetals() {
+      const count = IS_MOBILE ? 25 : 45;
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
 
-        envelope3d.classList.add("open");
-        envelopeHint.textContent = "Mãi yêu em ❤️";
-        spawnMiniHearts();
-        setTimeout(spawnMiniHearts, 300);
-        triggerSlowMotion();
-        tryStartMusic();
-      }
+      for (let i = 0; i < count; i++) {
+        const petal = document.createElement('div');
+        petal.className = 'petal';
 
-      envelope3d.addEventListener("click", openEnvelope);
-      envelope3d.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          openEnvelope();
+        const size = 15 + Math.random() * 25;
+        const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
+        const speed = 150 + Math.random() * 350;
+        const dx = Math.cos(angle) * speed;
+        const dy = Math.sin(angle) * speed - 100;
+        const dur = 2000 + Math.random() * 2000;
+
+        // Red petal colors
+        const hue = 340 + Math.random() * 25;
+        const sat = 70 + Math.random() * 30;
+        const light = 35 + Math.random() * 30;
+
+        petal.innerHTML = `<div class="petal-shape" style="
+            width:${size}px;height:${size * 1.3}px;
+            background: linear-gradient(135deg, hsl(${hue},${sat}%,${light}%), hsl(${hue},${sat}%,${light + 15}%));
+            box-shadow: 0 0 10px hsla(${hue},80%,50%,0.5);
+            animation-duration: ${1 + Math.random() * 2}s;
+          "></div>`;
+
+        petal.style.left = cx + 'px';
+        petal.style.top = cy + 'px';
+        petal.style.opacity = '1';
+
+        document.body.appendChild(petal);
+
+        // Animate
+        const startTime = performance.now();
+        const gravity = 80 + Math.random() * 60;
+
+        function animatePetal(now) {
+          const t = (now - startTime) / 1000;
+          const progress = t / (dur / 1000);
+          if (progress >= 1) { petal.remove(); return; }
+
+          const x = dx * t;
+          const y = dy * t + 0.5 * gravity * t * t;
+          const rotation = t * (100 + Math.random() * 200);
+          const opacity = 1 - Math.pow(progress, 2);
+
+          petal.style.transform = `translate(${x}px, ${y}px) rotate(${rotation}deg)`;
+          petal.style.opacity = opacity;
+
+          requestAnimationFrame(animatePetal);
         }
-      });
-
-      function showEnvelope() {
-        if (envelopeVisible) return;
-        envelopeVisible = true;
-        envelopeStage.classList.add("visible");
+        requestAnimationFrame(animatePetal);
       }
+    }
 
-      // ==============================
-      // Heart selection
-      // ==============================
-      function selectHeart(targetMesh) {
-        if (selectedHeart) return;
+    // ===========================
+    // Spark Trails
+    // ===========================
+    function spawnSparks() {
+      const count = IS_MOBILE ? 40 : 80;
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
 
-        selectedHeart = targetMesh;
-        sceneHint.classList.add("hide");
+      for (let i = 0; i < count; i++) {
+        const spark = document.createElement('div');
+        spark.className = 'spark';
 
-        focusProgress = 0;
-        focusFromCam.copy(camera.position);
-        focusFromLook.copy(currentLook);
+        const size = 2 + Math.random() * 5;
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 200 + Math.random() * 500;
+        const dx = Math.cos(angle) * speed;
+        const dy = Math.sin(angle) * speed;
+        const dur = 1000 + Math.random() * 1500;
 
-        targetMesh.getWorldPosition(focusToLook);
-        const outward = focusToLook.clone().normalize();
-        focusToCam
-          .copy(focusToLook)
-          .add(outward.multiplyScalar(IS_MOBILE ? 3.1 : 3.8));
+        const colors = ['#ff3355', '#ff6688', '#ffaacc', '#ffffff', '#ff1133', '#ff8899'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
 
-        for (const heart of hearts) {
-          if (heart.mesh === targetMesh) {
-            heart.targetOpacity = 1;
-            heart.targetScale = heart.baseScale * 1.24;
-          } else {
-            heart.targetOpacity = 0.08;
-            heart.targetScale = heart.baseScale * 0.78;
-          }
+        spark.style.width = size + 'px';
+        spark.style.height = size + 'px';
+        spark.style.background = color;
+        spark.style.boxShadow = `0 0 ${size * 2}px ${color}, 0 0 ${size * 4}px ${color}`;
+        spark.style.left = cx + 'px';
+        spark.style.top = cy + 'px';
+
+        document.body.appendChild(spark);
+
+        const startTime = performance.now();
+
+        function animateSpark(now) {
+          const t = (now - startTime) / 1000;
+          const progress = t / (dur / 1000);
+          if (progress >= 1) { spark.remove(); return; }
+
+          const decel = 1 - progress * 0.7;
+          const x = dx * t * decel;
+          const y = dy * t * decel + 40 * t * t;
+          const scale = 1 - progress;
+          const opacity = 1 - Math.pow(progress, 1.5);
+
+          spark.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+          spark.style.opacity = opacity;
+
+          requestAnimationFrame(animateSpark);
         }
-
-        bloomTarget = IS_MOBILE ? 1.32 : 1.58;
-        setTimeout(showEnvelope, 780);
+        requestAnimationFrame(animateSpark);
       }
+    }
 
-      function handlePointerDown(event) {
-        tryStartMusic();
-        if (selectedHeart) return;
+    // ===========================
+    // Glowing Fragments
+    // ===========================
+    function spawnGlowFragments() {
+      const count = IS_MOBILE ? 15 : 30;
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
 
-        const rect = renderer.domElement.getBoundingClientRect();
-        const clientX = event.clientX;
-        const clientY = event.clientY;
+      for (let i = 0; i < count; i++) {
+        const frag = document.createElement('div');
+        frag.className = 'spark';
 
-        pointerNDC.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-        pointerNDC.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+        const size = 6 + Math.random() * 12;
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 80 + Math.random() * 200;
+        const dx = Math.cos(angle) * speed;
+        const dy = Math.sin(angle) * speed;
 
-        raycaster.setFromCamera(pointerNDC, camera);
-        const hits = raycaster.intersectObjects(heartMeshes, false);
-        if (hits.length > 0) {
-          selectHeart(hits[0].object);
+        frag.style.width = size + 'px';
+        frag.style.height = size + 'px';
+        frag.style.borderRadius = Math.random() > 0.5 ? '50%' : '30%';
+        frag.style.background = `radial-gradient(circle, rgba(255,100,150,0.9), rgba(200,0,50,0.4))`;
+        frag.style.boxShadow = `0 0 ${size}px rgba(255,60,100,0.8), 0 0 ${size * 3}px rgba(255,30,70,0.3)`;
+        frag.style.left = cx + 'px';
+        frag.style.top = cy + 'px';
+
+        document.body.appendChild(frag);
+
+        const startTime = performance.now();
+        const dur = 2500 + Math.random() * 2000;
+
+        function animateFrag(now) {
+          const t = (now - startTime) / 1000;
+          const progress = t / (dur / 1000);
+          if (progress >= 1) { frag.remove(); return; }
+
+          const x = dx * t * (1 - progress * 0.5);
+          const y = dy * t * (1 - progress * 0.5) + 20 * t * t;
+          const opacity = 1 - Math.pow(progress, 2);
+          const scale = 1 - progress * 0.5;
+
+          frag.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+          frag.style.opacity = opacity;
+
+          requestAnimationFrame(animateFrag);
+        }
+        requestAnimationFrame(animateFrag);
+      }
+    }
+
+    // ===========================
+    // Crack Line Effect (Canvas overlay on heart)
+    // ===========================
+    // We'll do crack via a thin emissive line material mapped onto heart - simplified as just glow boost
+
+    // ===========================
+    // Pointer Parallax
+    // ===========================
+    const mouseTarget = { x: 0, y: 0 };
+    const mouseCurrent = { x: 0, y: 0 };
+
+    window.addEventListener('mousemove', (e) => {
+      mouseTarget.x = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouseTarget.y = (e.clientY / window.innerHeight - 0.5) * 2;
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      const t = e.touches[0];
+      if (!t) return;
+      mouseTarget.x = (t.clientX / window.innerWidth - 0.5) * 2;
+      mouseTarget.y = (t.clientY / window.innerHeight - 0.5) * 2;
+    }, { passive: true });
+
+    // ===========================
+    // Resize
+    // ===========================
+    function onResize() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+      composer.setSize(w, h);
+      bloomPass.setSize(w, h);
+    }
+    window.addEventListener('resize', onResize);
+
+    // ===========================
+    // Environment Map (simple gradient for reflections)
+    // ===========================
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    const envScene = new THREE.Scene();
+
+    // Create gradient environment sphere
+    const envGeo = new THREE.SphereGeometry(20, 32, 32);
+    const envCanvas = document.createElement('canvas');
+    envCanvas.width = 256;
+    envCanvas.height = 256;
+    const envCtx2 = envCanvas.getContext('2d');
+    const envGrad2 = envCtx2.createRadialGradient(128, 128, 0, 128, 128, 128);
+    envGrad2.addColorStop(0, '#441122');
+    envGrad2.addColorStop(0.5, '#220011');
+    envGrad2.addColorStop(1, '#110008');
+    envCtx2.fillStyle = envGrad2;
+    envCtx2.fillRect(0, 0, 256, 256);
+    // Add some highlights
+    envCtx2.fillStyle = 'rgba(255,120,160,0.3)';
+    envCtx2.beginPath(); envCtx2.arc(80, 60, 30, 0, Math.PI * 2); envCtx2.fill();
+    envCtx2.fillStyle = 'rgba(255,180,200,0.15)';
+    envCtx2.beginPath(); envCtx2.arc(180, 100, 40, 0, Math.PI * 2); envCtx2.fill();
+
+    const envTexture = new THREE.CanvasTexture(envCanvas);
+    const envMat2 = new THREE.MeshBasicMaterial({ map: envTexture, side: THREE.BackSide });
+    envScene.add(new THREE.Mesh(envGeo, envMat2));
+
+    const envMap = pmremGenerator.fromScene(envScene, 0.04).texture;
+    heartMaterial.envMap = envMap;
+    scene.environment = envMap;
+
+    // ===========================
+    // Animation Loop
+    // ===========================
+    const clock = new THREE.Clock();
+    let timeline = 0;
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const rawDelta = Math.min(clock.getDelta(), 0.05);
+      timeScale += (timeScaleTarget - timeScale) * 0.04;
+      const delta = rawDelta * timeScale;
+      timeline += delta;
+
+      if (!heartExploded) {
+        // === Heart Breathing Pulse ===
+        const breathe = 1 + Math.sin(timeline * 1.8) * 0.05; // scale 1.0 - 1.05
+        heartMesh.scale.setScalar(breathe);
+
+        // === Floating Up/Down ===
+        heartMesh.position.y = Math.sin(timeline * 0.8) * 0.15;
+
+        // === Subtle rotation (luxurious feel) ===
+        heartMesh.rotation.y = Math.sin(timeline * 0.3) * 0.15;
+
+        // === Inner glow pulsation ===
+        const glowPulse = 0.4 + Math.sin(timeline * 2.2) * 0.25 + glowIntensity * 0.5;
+        heartMaterial.emissiveIntensity = glowPulse;
+        innerGlow.intensity = 5 + Math.sin(timeline * 2.5) * 2 + glowIntensity * 8;
+
+        // === Aura breathing ===
+        const auraBreath = 1 + Math.sin(timeline * 1.8) * 0.1;
+        auraMesh.scale.setScalar(auraBreath);
+        auraMaterial.opacity = 0.04 + Math.sin(timeline * 1.5) * 0.025;
+        aura2Mesh.scale.setScalar(auraBreath * 1.1);
+        aura2Material.opacity = 0.02 + Math.sin(timeline * 1.2 + 0.5) * 0.015;
+
+        // === Sparkle Particles Orbital Motion ===
+        const sparkPos = sparkGeometry.attributes.position;
+        for (let i = 0; i < SPARK_COUNT; i++) {
+          const d = sparkData[i];
+          const angle = timeline * d.orbitSpeed + d.orbitPhase;
+          const r = d.orbitRadius + Math.sin(timeline * 0.5 + d.orbitPhase) * 0.3;
+
+          const x = Math.cos(angle) * r * Math.cos(d.orbitTilt);
+          const y = d.yOffset + Math.sin(timeline * d.verticalSpeed + d.orbitPhase) * 0.8;
+          const z = Math.sin(angle) * r;
+
+          sparkPos.setXYZ(i, x, y, z);
+        }
+        sparkPos.needsUpdate = true;
+
+        // Sparkle twinkle
+        sparkMaterial.opacity = 0.6 + Math.sin(timeline * 3) * 0.2;
+
+        // === Glow decay after click ===
+        if (glowIntensity > 0) {
+          glowIntensity *= 0.995;
+          if (glowIntensity < 0.01) glowIntensity = 0;
         }
       }
 
-      renderer.domElement.addEventListener("pointerdown", handlePointerDown, {
-        passive: true,
-      });
+      // === Camera: Slow zoom in/out + parallax ===
+      mouseCurrent.x += (mouseTarget.x - mouseCurrent.x) * 0.03;
+      mouseCurrent.y += (mouseTarget.y - mouseCurrent.y) * 0.03;
 
-      // ==============================
-      // Camera pointer parallax
-      // ==============================
-      function updatePointer(clientX, clientY) {
-        const x = (clientX / window.innerWidth) * 2 - 1;
-        const y = (clientY / window.innerHeight) * 2 - 1;
-        pointerTarget.set(x * 0.45, y * 0.45);
+      if (!heartExploded) {
+        cameraZoomTarget = 5.5 + Math.sin(timeline * 0.25) * 0.5; // gentle zoom
+      } else {
+        cameraZoomTarget = 7;
       }
 
-      window.addEventListener(
-        "mousemove",
-        (event) => {
-          updatePointer(event.clientX, event.clientY);
-        },
-        { passive: true },
+      const camZ = THREE.MathUtils.lerp(camera.position.z, cameraZoomTarget, 0.02);
+      camera.position.set(
+        mouseCurrent.x * 0.5,
+        mouseCurrent.y * -0.3 + 0.1,
+        camZ
       );
+      camera.lookAt(0, heartMesh.position.y * 0.5, 0);
 
-      window.addEventListener(
-        "touchmove",
-        (event) => {
-          const touch = event.touches[0];
-          if (!touch) return;
-          updatePointer(touch.clientX, touch.clientY);
-        },
-        { passive: true },
-      );
+      // === Stars slow rotation ===
+      starsNear.rotation.y += delta * 0.008;
+      starsNear.rotation.x = Math.sin(timeline * 0.1) * 0.05;
+      starsFar.rotation.y -= delta * 0.003;
 
-      // ==============================
-      // Resize handling
-      // ==============================
-      function onResize() {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
+      // === Bloom smoothing ===
+      const targetBloom = heartExploded ? 1.8 : (1.2 + glowIntensity * 0.8);
+      bloomPass.strength = THREE.MathUtils.lerp(bloomPass.strength, targetBloom, 0.04);
 
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
+      // === Light breathing ===
+      keyLight.intensity = 15 + Math.sin(timeline * 1.5) * 3;
+      fillLight.intensity = 8 + Math.sin(timeline * 1.2 + 1) * 2;
+      rimLight.intensity = 12 + Math.sin(timeline * 1.8 + 2) * 3;
 
-        renderer.setPixelRatio(
-          Math.min(window.devicePixelRatio || 1, IS_MOBILE ? 1.6 : 2),
-        );
-        renderer.setSize(width, height);
-        composer.setSize(width, height);
-        bloomPass.setSize(width, height);
-        if (typeof bokehPass.setSize === "function") {
-          bokehPass.setSize(width, height);
-        }
+      composer.render();
+    }
+
+    // ===========================
+    // Init
+    // ===========================
+    onResize();
+    animate();
+
+    // ===========================
+    // Handle visibility for performance
+    // ===========================
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        clock.stop();
+      } else {
+        clock.start();
       }
+    });
 
-      window.addEventListener("resize", onResize);
+  </script>
+</body>
 
-      // ==============================
-      // Animation loop
-      // ==============================
-      const clock = new THREE.Clock();
-
-      function animate() {
-        requestAnimationFrame(animate);
-
-        const rawDelta = Math.min(clock.getDelta(), 0.05);
-        timeScale += (timeScaleTarget - timeScale) * 0.06;
-        const delta = rawDelta * timeScale;
-        timeline += delta;
-
-        pointerCurrent.lerp(pointerTarget, 0.06);
-
-        // Heart sphere motion
-        heartSphere.rotation.y += delta * (selectedHeart ? 0.06 : 0.16);
-        heartSphere.rotation.x = Math.sin(timeline * 0.22) * 0.13;
-
-        for (const heart of hearts) {
-          const { mesh, material, direction } = heart;
-
-          const radialPulse =
-            Math.sin(timeline * heart.floatSpeed + heart.phase) * 0.28;
-          const radial = heart.radius + radialPulse;
-          mesh.position.copy(direction).multiplyScalar(radial);
-
-          mesh.lookAt(tmpVec.copy(mesh.position).multiplyScalar(1.9));
-          mesh.rotateY(timeline * heart.spinSpeed + heart.phase * 0.3);
-          mesh.rotateX(
-            Math.sin(timeline * heart.wobbleSpeed + heart.phase) * 0.16,
-          );
-
-          heart.opacityNow = THREE.MathUtils.lerp(
-            heart.opacityNow,
-            heart.targetOpacity,
-            0.08,
-          );
-          material.opacity = heart.opacityNow;
-          material.emissiveIntensity =
-            heart.baseEmissive * (0.38 + heart.opacityNow * 0.92);
-
-          let pulseFactor = 1;
-          if (selectedHeart && mesh === selectedHeart) {
-            pulseFactor = 1 + Math.sin(timeline * 3.7) * 0.06;
-          }
-
-          const scaleTarget = heart.targetScale * pulseFactor;
-          heart.scaleNow = THREE.MathUtils.lerp(
-            heart.scaleNow,
-            scaleTarget,
-            0.08,
-          );
-          mesh.scale.setScalar(heart.scaleNow);
-        }
-
-        // Camera cinematic movement
-        if (!selectedHeart) {
-          const orbit = timeline * 0.15;
-          const radius = cameraBaseRadius + pointerCurrent.x * 1.35;
-
-          cameraTarget.set(
-            Math.cos(orbit) * radius,
-            1.9 + Math.sin(timeline * 0.4) * 1.05 + pointerCurrent.y * 0.95,
-            Math.sin(orbit) * radius,
-          );
-
-          lookTarget.set(pointerCurrent.x * 0.95, pointerCurrent.y * 0.45, 0);
-          camera.position.lerp(cameraTarget, 0.045);
-          currentLook.lerp(lookTarget, 0.08);
-        } else {
-          focusProgress = Math.min(1, focusProgress + delta * 0.82);
-          const k = 1 - Math.pow(1 - focusProgress, 3);
-
-          cameraTarget.copy(focusFromCam).lerp(focusToCam, k);
-          lookTarget.copy(focusFromLook).lerp(focusToLook, k);
-
-          camera.position.copy(cameraTarget);
-          currentLook.copy(lookTarget);
-        }
-
-        camera.lookAt(currentLook);
-
-        // Stars movement
-        starsNear.rotation.y += delta * 0.012;
-        starsNear.rotation.x = Math.sin(timeline * 0.14) * 0.08;
-        starsNear.material.opacity = 0.56 + Math.sin(timeline * 0.8) * 0.1;
-
-        starsFar.rotation.y -= delta * 0.004;
-        starsFar.material.opacity =
-          0.26 + Math.sin(timeline * 0.5 + 1.2) * 0.06;
-
-        // Post FX tuning
-        bloomPass.strength = THREE.MathUtils.lerp(
-          bloomPass.strength,
-          bloomTarget,
-          0.06,
-        );
-
-        if (bokehPass) {
-          const desiredFocus = camera.position.distanceTo(currentLook);
-          const bokehUniforms = bokehPass.materialBokeh.uniforms;
-          bokehUniforms.focus.value = THREE.MathUtils.lerp(
-            bokehUniforms.focus.value,
-            desiredFocus,
-            0.08,
-          );
-
-          const apertureTarget = selectedHeart
-            ? baseAperture * 1.6
-            : baseAperture;
-          bokehUniforms.aperture.value = THREE.MathUtils.lerp(
-            bokehUniforms.aperture.value,
-            apertureTarget,
-            0.06,
-          );
-        }
-
-        composer.render();
-      }
-
-      onResize();
-      animate();
-    </script>
-  </body>
 </html>
